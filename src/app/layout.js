@@ -1,33 +1,15 @@
 import "./globals.css";
 import Image from "next/image";
+import Script from "next/script";
 
 export const metadata = {
-  metadataBase: new URL("https://affordthiscar.com"),
+  metadataBase: new URL("https://www.affordthiscar.com"),
   title: {
     default: "AffordThisCar",
     template: "%s | AffordThisCar",
   },
   description:
     "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
-  robots: {
-    index: true,
-    follow: true,
-  },
-  openGraph: {
-    title: "AffordThisCar",
-    description:
-      "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
-    url: "https://affordthiscar.com",
-    siteName: "AffordThisCar",
-    locale: "en_CA",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "AffordThisCar",
-    description:
-      "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
-  },
 };
 
 const navLinkStyle = {
@@ -40,6 +22,22 @@ const navLinkStyle = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-HHVYE4V8HS"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-HHVYE4V8HS');
+          `}
+        </Script>
+      </head>
+
       <body
         style={{
           margin: 0,
@@ -53,7 +51,7 @@ export default function RootLayout({ children }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            padding: "16px 28px",
+            padding: "16px 24px",
             borderBottom: "1px solid #e5e7eb",
             background: "#ffffff",
             position: "sticky",
@@ -68,28 +66,21 @@ export default function RootLayout({ children }) {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "14px",
               textDecoration: "none",
-              color: "#111827",
             }}
           >
             <Image
               src="/logo.png"
               alt="AffordThisCar logo"
               width={220}
-              height={70}
+              height={60}
               priority
-              style={{ width: "auto", height: "56px" }}
-            />
-            <span
               style={{
-                fontSize: "20px",
-                fontWeight: "700",
-                lineHeight: 1,
+                width: "220px",
+                height: "auto",
+                objectFit: "contain",
               }}
-            >
-              AffordThisCar
-            </span>
+            />
           </a>
 
           <nav
@@ -100,24 +91,12 @@ export default function RootLayout({ children }) {
               flexWrap: "wrap",
             }}
           >
-            <a href="/" style={navLinkStyle}>
-              Calculator
-            </a>
-            <a href="/compare" style={navLinkStyle}>
-              Compare
-            </a>
-            <a href="/ownership-cost" style={navLinkStyle}>
-              Ownership Cost
-            </a>
-            <a href="/deal-review" style={navLinkStyle}>
-              Deal Review
-            </a>
-            <a href="/car-payment/30000" style={navLinkStyle}>
-              Payments
-            </a>
-            <a href="/income-needed/30000" style={navLinkStyle}>
-              Income Needed
-            </a>
+            <a href="/" style={navLinkStyle}>Calculator</a>
+            <a href="/compare" style={navLinkStyle}>Compare</a>
+            <a href="/ownership-cost" style={navLinkStyle}>Ownership Cost</a>
+            <a href="/deal-review" style={navLinkStyle}>Deal Review</a>
+            <a href="/car-payment/30000" style={navLinkStyle}>Payments</a>
+            <a href="/income-needed/30000" style={navLinkStyle}>Income Needed</a>
           </nav>
         </header>
 
@@ -152,33 +131,6 @@ export default function RootLayout({ children }) {
           >
             <div style={{ color: "#64748b", fontSize: "14px" }}>
               © 2026 AffordThisCar
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                gap: "18px",
-                flexWrap: "wrap",
-              }}
-            >
-              <a href="/" style={navLinkStyle}>
-                Home
-              </a>
-              <a href="/compare" style={navLinkStyle}>
-                Compare Cars
-              </a>
-              <a href="/ownership-cost" style={navLinkStyle}>
-                Ownership Cost
-              </a>
-              <a href="/deal-review" style={navLinkStyle}>
-                Deal Review
-              </a>
-              <a href="/car-payment/30000" style={navLinkStyle}>
-                Payments
-              </a>
-              <a href="/income-needed/30000" style={navLinkStyle}>
-                Income Needed
-              </a>
             </div>
           </div>
         </footer>
