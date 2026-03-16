@@ -49,16 +49,15 @@ export default function RootLayout({ children }) {
         <header
           style={{
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "space-between",
-            padding: "16px 24px",
+            padding: "18px 20px",
             borderBottom: "1px solid #e5e7eb",
             background: "#ffffff",
             position: "sticky",
             top: 0,
             zIndex: 50,
-            flexWrap: "wrap",
-            gap: "16px",
+            gap: "14px",
           }}
         >
           <a
@@ -72,11 +71,11 @@ export default function RootLayout({ children }) {
             <Image
               src="/logo.png"
               alt="AffordThisCar logo"
-              width={220}
-              height={60}
+              width={260}
+              height={70}
               priority
               style={{
-                width: "220px",
+                width: "260px",
                 height: "auto",
                 objectFit: "contain",
               }}
@@ -89,6 +88,7 @@ export default function RootLayout({ children }) {
               gap: "18px",
               alignItems: "center",
               flexWrap: "wrap",
+              justifyContent: "center",
             }}
           >
             <a href="/" style={navLinkStyle}>Calculator</a>
@@ -116,23 +116,10 @@ export default function RootLayout({ children }) {
             padding: "28px 20px",
             borderTop: "1px solid #e5e7eb",
             background: "#ffffff",
+            textAlign: "center",
           }}
         >
-          <div
-            style={{
-              maxWidth: "1100px",
-              margin: "0 auto",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: "20px",
-              flexWrap: "wrap",
-            }}
-          >
-            <div style={{ color: "#64748b", fontSize: "14px" }}>
-              © 2026 AffordThisCar
-            </div>
-          </div>
+          © 2026 AffordThisCar
         </footer>
       </body>
     </html>
