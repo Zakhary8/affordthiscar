@@ -6,39 +6,21 @@ export default function Home() {
   const [income, setIncome] = useState("");
   const [frequency, setFrequency] = useState("yearly");
   const [expenses, setExpenses] = useState("");
-
-  const [car1Name, setCar1Name] = useState("Car 1");
-  const [car1Price, setCar1Price] = useState("");
-  const [car1Down, setCar1Down] = useState("");
-  const [car1Rate, setCar1Rate] = useState("");
-  const [car1Term, setCar1Term] = useState("");
-  const [car1Insurance, setCar1Insurance] = useState("");
-  const [car1Gas, setCar1Gas] = useState("");
-
-  const [car2Name, setCar2Name] = useState("Car 2");
-  const [car2Price, setCar2Price] = useState("");
-  const [car2Down, setCar2Down] = useState("");
-  const [car2Rate, setCar2Rate] = useState("");
-  const [car2Term, setCar2Term] = useState("");
-  const [car2Insurance, setCar2Insurance] = useState("");
-  const [car2Gas, setCar2Gas] = useState("");
-
+  const [carPrice, setCarPrice] = useState("");
+  const [downPayment, setDownPayment] = useState("");
+  const [interestRate, setInterestRate] = useState("");
+  const [loanTerm, setLoanTerm] = useState("");
+  const [insurance, setInsurance] = useState("");
+  const [gas, setGas] = useState("");
   const [result, setResult] = useState(null);
 
   function getMonthlyIncome(amount, incomeFrequency) {
     const value = Number(amount);
+
     if (incomeFrequency === "weekly") return value * 4.33;
     if (incomeFrequency === "biweekly") return value * 2.17;
     if (incomeFrequency === "monthly") return value;
     return value / 12;
-  }
-
-  function formatCurrency(value) {
-    return value.toLocaleString("en-CA", {
-      style: "currency",
-      currency: "CAD",
-      maximumFractionDigits: 0,
-    });
   }
 
   function calculateMonthlyPayment(loanAmount, annualRate, termYears) {
@@ -47,9 +29,7 @@ export default function Home() {
 
     if (!numberOfPayments || numberOfPayments <= 0) return 0;
 
-    if (monthlyRate === 0) {
-      return loanAmount / numberOfPayments;
-    }
+    if (monthlyRate === 0) return loanAmount / numberOfPayments;
 
     return (
       (loanAmount * monthlyRate) /
@@ -63,463 +43,489 @@ export default function Home() {
     if (carPercent > 15) score -= (carPercent - 15) * 2.5;
     if (moneyLeft < 1500) score -= (1500 - moneyLeft) / 20;
 
-    score = Math.max(0, Math.min(100, Math.round(score)));
-    return score;
+    return Math.max(0, Math.min(100, Math.round(score)));
   }
 
-  function getVerdictFromScore(score) {
-    if (score >= 75) {
-      return {
-        label: "Safe",
-        color: "#16a34a",
-      };
-    }
-    if (score >= 50) {
-      return {
-        label: "Stretch",
-        color: "#ca8a04",
-      };
-    }
-    return {
-      label: "Risky",
-      color: "#dc2626",
-    };
+  function getVerdict(score) {
+    if (score >= 75) return "Safe";
+    if (score >= 50) return "Stretch";
+    return "Risky";
   }
 
-  function analyzeCar(
-    name,
-    price,
-    down,
-    rate,
-    term,
-    insurance,
-    gas,
-    monthlyIncome,
-    monthlyExpenses
-  ) {
-    const carPrice = Number(price) || 0;
-    const carDown = Number(down) || 0;
-    const carRate = Number(rate) || 0;
-    const carTerm = Number(term) || 0;
-    const carInsurance = Number(insurance) || 0;
-    const carGas = Number(gas) || 0;
-
-    const loanAmount = Math.max(carPrice - carDown, 0);
-    const monthlyPayment = calculateMonthlyPayment(loanAmount, carRate, carTerm);
-
-    const maintenance = 75;
-    const totalCarCost = monthlyPayment + carInsurance + carGas + maintenance;
-    const carPercent = (totalCarCost / monthlyIncome) * 100;
-    const moneyLeft = monthlyIncome - monthlyExpenses - totalCarCost;
-    const score = calculateScore(carPercent, moneyLeft);
-    const verdict = getVerdictFromScore(score);
-
-    const comfortableIncome = totalCarCost / 0.15 * 12;
-    const stretchIncome = totalCarCost / 0.25 * 12;
-
-    return {
-      name,
-      monthlyPayment,
-      totalCarCost,
-      carPercent,
-      moneyLeft,
-      score,
-      verdict,
-      comfortableIncome,
-      stretchIncome,
-    };
+  function getScoreColor(score) {
+    if (score >= 75) return "#22c55e";
+    if (score >= 50) return "#f59e0b";
+    return "#ef4444";
   }
 
-  function calculateComparison() {
+  function formatCurrency(value) {
+    return value.toLocaleString("en-CA", {
+      style: "currency",
+      currency: "CAD",
+      maximumFractionDigits: 0,
+    });
+  }
+
+  function calculate() {
     const monthlyIncome = getMonthlyIncome(income, frequency);
     const monthlyExpenses = Number(expenses) || 0;
+    const price = Number(carPrice) || 0;
+    const down = Number(downPayment) || 0;
+    const rate = Number(interestRate) || 0;
+    const years = Number(loanTerm) || 0;
+    const monthlyInsurance = Number(insurance) || 0;
+    const monthlyGas = Number(gas) || 0;
 
-    if (!monthlyIncome) {
-      setResult("Please fill in your income first.");
+    if (!monthlyIncome || !price || !years) {
+      setResult("Please fill in income, car price, and loan term.");
       return;
     }
 
-    const first = analyzeCar(
-      car1Name,
-      car1Price,
-      car1Down,
-      car1Rate,
-      car1Term,
-      car1Insurance,
-      car1Gas,
-      monthlyIncome,
-      monthlyExpenses
-    );
+    const loanAmount = Math.max(price - down, 0);
+    const monthlyPayment = calculateMonthlyPayment(loanAmount, rate, years);
+    const maintenance = 75;
+    const totalMonthlyCarCost =
+      monthlyPayment + monthlyInsurance + monthlyGas + maintenance;
 
-    const second = analyzeCar(
-      car2Name,
-      car2Price,
-      car2Down,
-      car2Rate,
-      car2Term,
-      car2Insurance,
-      car2Gas,
-      monthlyIncome,
-      monthlyExpenses
-    );
-
-    let winner = null;
-
-    if (first.score > second.score) {
-      winner = `${first.name} is the safer financial choice.`;
-    } else if (second.score > first.score) {
-      winner = `${second.name} is the safer financial choice.`;
-    } else {
-      winner = "Both cars score the same financially.";
-    }
+    const carCostPercent = (totalMonthlyCarCost / monthlyIncome) * 100;
+    const moneyLeft = monthlyIncome - monthlyExpenses - totalMonthlyCarCost;
+    const score = calculateScore(carCostPercent, moneyLeft);
 
     setResult({
       monthlyIncome,
-      first,
-      second,
-      winner,
+      monthlyPayment,
+      totalMonthlyCarCost,
+      carCostPercent,
+      moneyLeft,
+      maintenance,
+      score,
+      verdict: getVerdict(score),
+      scoreColor: getScoreColor(score),
     });
   }
 
   return (
-    <main style={pageStyle}>
-      <div style={cardStyle}>
-        <h1 style={titleStyle}>AffordThisCar</h1>
-        <p style={subtitleStyle}>
-          Compare two cars and see which one is safer for your budget.
-        </p>
+    <div style={pageStyle}>
+      <section style={heroStyle}>
+        <div style={cardStyle}>
+          <p style={eyebrowStyle}>AffordThisCar</p>
+          <h1 style={titleStyle}>Can You Actually Afford That Car?</h1>
+          <p style={subtitleStyle}>
+            Check affordability, compare vehicles, estimate ownership cost,
+            review dealership deals, and explore payment guides.
+          </p>
 
-        <div style={sectionStyle}>
-          <h2 style={sectionHeading}>Your Budget</h2>
-          <div style={gridStyle}>
-            <div>
-              <label style={labelStyle}>Income Amount</label>
-              <input
-                type="number"
-                step="1000"
-                value={income}
-                onChange={(e) => setIncome(e.target.value)}
-                placeholder="70000"
-                style={inputStyle}
-              />
-            </div>
+          <div style={buttonRowStyle}>
+            <a href="/car-payment/30000" style={secondaryLinkStyle}>
+              Payment Guides
+            </a>
+            <a href="/income-needed/30000" style={secondaryLinkStyle}>
+              Income Needed
+            </a>
+            <a href="/deal-review" style={primaryLinkStyle}>
+              Deal Review
+            </a>
+          </div>
+        </div>
+      </section>
 
-            <div>
-              <label style={labelStyle}>Income Frequency</label>
-              <select
-                value={frequency}
-                onChange={(e) => setFrequency(e.target.value)}
-                style={inputStyle}
-              >
-                <option value="yearly">Yearly</option>
-                <option value="monthly">Monthly</option>
-                <option value="biweekly">Biweekly</option>
-                <option value="weekly">Weekly</option>
-              </select>
-            </div>
+      <section style={cardStyle}>
+        <h2 style={sectionTitleStyle}>Affordability Calculator</h2>
 
-            <div>
-              <label style={labelStyle}>Monthly Expenses</label>
-              <input
-                type="number"
-                step="50"
-                value={expenses}
-                onChange={(e) => setExpenses(e.target.value)}
-                placeholder="1800"
-                style={inputStyle}
-              />
-            </div>
+        <div style={gridStyle}>
+          <div>
+            <label style={labelStyle}>Income Amount</label>
+            <input
+              type="number"
+              value={income}
+              onChange={(e) => setIncome(e.target.value)}
+              placeholder="70000"
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Income Frequency</label>
+            <select
+              value={frequency}
+              onChange={(e) => setFrequency(e.target.value)}
+              style={inputStyle}
+            >
+              <option value="yearly">Yearly</option>
+              <option value="monthly">Monthly</option>
+              <option value="biweekly">Biweekly</option>
+              <option value="weekly">Weekly</option>
+            </select>
+          </div>
+
+          <div>
+            <label style={labelStyle}>Monthly Expenses</label>
+            <input
+              type="number"
+              value={expenses}
+              onChange={(e) => setExpenses(e.target.value)}
+              placeholder="1800"
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Car Price</label>
+            <input
+              type="number"
+              value={carPrice}
+              onChange={(e) => setCarPrice(e.target.value)}
+              placeholder="30000"
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Down Payment</label>
+            <input
+              type="number"
+              value={downPayment}
+              onChange={(e) => setDownPayment(e.target.value)}
+              placeholder="5000"
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Interest Rate</label>
+            <input
+              type="number"
+              value={interestRate}
+              onChange={(e) => setInterestRate(e.target.value)}
+              placeholder="6.9"
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Loan Term (Years)</label>
+            <input
+              type="number"
+              value={loanTerm}
+              onChange={(e) => setLoanTerm(e.target.value)}
+              placeholder="5"
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Monthly Insurance</label>
+            <input
+              type="number"
+              value={insurance}
+              onChange={(e) => setInsurance(e.target.value)}
+              placeholder="180"
+              style={inputStyle}
+            />
+          </div>
+
+          <div>
+            <label style={labelStyle}>Monthly Gas</label>
+            <input
+              type="number"
+              value={gas}
+              onChange={(e) => setGas(e.target.value)}
+              placeholder="160"
+              style={inputStyle}
+            />
           </div>
         </div>
 
-        <div style={compareGridStyle}>
-          <div style={carBoxStyle}>
-            <h2 style={sectionHeading}>Car 1</h2>
-            <div style={gridStyle}>
-              <input
-                type="text"
-                value={car1Name}
-                onChange={(e) => setCar1Name(e.target.value)}
-                placeholder="Car 1 name"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="500"
-                value={car1Price}
-                onChange={(e) => setCar1Price(e.target.value)}
-                placeholder="Car price"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="500"
-                value={car1Down}
-                onChange={(e) => setCar1Down(e.target.value)}
-                placeholder="Down payment"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="0.1"
-                value={car1Rate}
-                onChange={(e) => setCar1Rate(e.target.value)}
-                placeholder="Interest rate (%)"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="1"
-                value={car1Term}
-                onChange={(e) => setCar1Term(e.target.value)}
-                placeholder="Loan term (years)"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="5"
-                value={car1Insurance}
-                onChange={(e) => setCar1Insurance(e.target.value)}
-                placeholder="Monthly insurance"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="5"
-                value={car1Gas}
-                onChange={(e) => setCar1Gas(e.target.value)}
-                placeholder="Monthly gas"
-                style={inputStyle}
-              />
-            </div>
-          </div>
-
-          <div style={carBoxStyle}>
-            <h2 style={sectionHeading}>Car 2</h2>
-            <div style={gridStyle}>
-              <input
-                type="text"
-                value={car2Name}
-                onChange={(e) => setCar2Name(e.target.value)}
-                placeholder="Car 2 name"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="500"
-                value={car2Price}
-                onChange={(e) => setCar2Price(e.target.value)}
-                placeholder="Car price"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="500"
-                value={car2Down}
-                onChange={(e) => setCar2Down(e.target.value)}
-                placeholder="Down payment"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="0.1"
-                value={car2Rate}
-                onChange={(e) => setCar2Rate(e.target.value)}
-                placeholder="Interest rate (%)"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="1"
-                value={car2Term}
-                onChange={(e) => setCar2Term(e.target.value)}
-                placeholder="Loan term (years)"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="5"
-                value={car2Insurance}
-                onChange={(e) => setCar2Insurance(e.target.value)}
-                placeholder="Monthly insurance"
-                style={inputStyle}
-              />
-              <input
-                type="number"
-                step="5"
-                value={car2Gas}
-                onChange={(e) => setCar2Gas(e.target.value)}
-                placeholder="Monthly gas"
-                style={inputStyle}
-              />
-            </div>
-          </div>
-        </div>
-
-        <button onClick={calculateComparison} style={buttonStyle}>
-          Compare both cars
+        <button onClick={calculate} style={buttonStyle}>
+          Calculate
         </button>
+      </section>
 
-        {result && typeof result === "string" && (
-          <div style={errorBoxStyle}>{result}</div>
+      <section style={cardStyle}>
+        <h2 style={sectionTitleStyle}>Results</h2>
+
+        {!result && (
+          <p style={mutedTextStyle}>
+            Enter your numbers to see your affordability result.
+          </p>
+        )}
+
+        {typeof result === "string" && (
+          <div style={errorStyle}>{result}</div>
         )}
 
         {result && typeof result === "object" && (
-          <div style={resultBoxStyle}>
-            <div style={winnerBoxStyle}>{result.winner}</div>
+          <div>
+            <div style={resultTopStyle}>
+              <div>
+                <div style={smallLabelStyle}>Affordability Score</div>
+                <div style={scoreStyle}>{result.score}/100</div>
+              </div>
 
-            <div style={compareGridStyle}>
-              {[result.first, result.second].map((car, index) => (
-                <div key={index} style={resultCardStyle}>
-                  <div
-                    style={{
-                      ...badgeStyle,
-                      backgroundColor: car.verdict.color,
-                    }}
-                  >
-                    {car.verdict.label}
-                  </div>
+              <div
+                style={{
+                  ...badgeStyle,
+                  backgroundColor: result.scoreColor,
+                }}
+              >
+                {result.verdict}
+              </div>
+            </div>
 
-                  <h3 style={{ marginTop: 0 }}>{car.name}</h3>
-
-                  <p><strong>Score:</strong> {car.score}/100</p>
-                  <p><strong>Monthly payment:</strong> {formatCurrency(car.monthlyPayment)}</p>
-                  <p><strong>Total monthly car cost:</strong> {formatCurrency(car.totalCarCost)}</p>
-                  <p><strong>Car cost % of income:</strong> {car.carPercent.toFixed(1)}%</p>
-                  <p><strong>Money left after expenses:</strong> {formatCurrency(car.moneyLeft)}</p>
-                  <p><strong>Comfortable income needed:</strong> {formatCurrency(car.comfortableIncome)}/year</p>
-                  <p style={{ marginBottom: 0 }}>
-                    <strong>Stretch income needed:</strong> {formatCurrency(car.stretchIncome)}/year
-                  </p>
+            <div style={statsGridStyle}>
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Monthly Income</div>
+                <div style={statValueStyle}>
+                  {formatCurrency(result.monthlyIncome)}
                 </div>
-              ))}
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Monthly Payment</div>
+                <div style={statValueStyle}>
+                  {formatCurrency(result.monthlyPayment)}
+                </div>
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>True Monthly Car Cost</div>
+                <div style={statValueStyle}>
+                  {formatCurrency(result.totalMonthlyCarCost)}
+                </div>
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Cost Percent of Income</div>
+                <div style={statValueStyle}>
+                  {result.carCostPercent.toFixed(1)}%
+                </div>
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Money Left</div>
+                <div style={statValueStyle}>
+                  {formatCurrency(result.moneyLeft)}
+                </div>
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Maintenance Buffer</div>
+                <div style={statValueStyle}>
+                  {formatCurrency(result.maintenance)}
+                </div>
+              </div>
             </div>
           </div>
         )}
-      </div>
-    </main>
+      </section>
+
+      <section style={cardStyle}>
+        <h2 style={sectionTitleStyle}>Popular Search Pages</h2>
+
+        <div style={gridStyle}>
+          <a href="/salary/70000" style={linkCardStyle}>
+            What car can I afford with a 70000 salary
+          </a>
+          <a href="/can-i-afford-a/30000" style={linkCardStyle}>
+            Can I afford a 30000 car
+          </a>
+          <a href="/car-payment/30000" style={linkCardStyle}>
+            Monthly payment on a 30000 car
+          </a>
+          <a href="/income-needed/30000" style={linkCardStyle}>
+            Income needed for a 30000 car
+          </a>
+          <a href="/fr/puis-je-me-permettre-une-voiture/30000" style={linkCardStyle}>
+            French affordability page
+          </a>
+          <a href="/es/puedo-permitirme-un-auto/30000" style={linkCardStyle}>
+            Spanish affordability page
+          </a>
+        </div>
+      </section>
+    </div>
   );
 }
 
 const pageStyle = {
-  minHeight: "100vh",
-  backgroundColor: "#f8fafc",
-  padding: "40px 16px",
-};
-
-const cardStyle = {
   maxWidth: "1100px",
   margin: "0 auto",
-  backgroundColor: "white",
-  borderRadius: "20px",
-  padding: "32px",
-  boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+  padding: "40px 20px",
 };
 
-const titleStyle = {
-  fontSize: "42px",
-  fontWeight: "700",
-  textAlign: "center",
-  marginBottom: "12px",
-};
-
-const subtitleStyle = {
-  textAlign: "center",
-  fontSize: "18px",
-  color: "#475569",
-  marginBottom: "32px",
-};
-
-const sectionStyle = {
+const heroStyle = {
   marginBottom: "24px",
 };
 
-const sectionHeading = {
-  fontSize: "24px",
-  marginBottom: "16px",
+const cardStyle = {
+  backgroundColor: "white",
+  borderRadius: "24px",
+  padding: "28px",
+  border: "1px solid #e2e8f0",
+  boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+  marginBottom: "24px",
 };
 
-const compareGridStyle = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-  gap: "20px",
+const eyebrowStyle = {
+  margin: 0,
+  marginBottom: "10px",
+  color: "#64748b",
+  fontSize: "14px",
+  fontWeight: "700",
+  textTransform: "uppercase",
+};
+
+const titleStyle = {
+  margin: 0,
+  marginBottom: "14px",
+  fontSize: "48px",
+  lineHeight: 1.05,
+};
+
+const subtitleStyle = {
+  margin: 0,
+  color: "#475569",
+  fontSize: "18px",
+  lineHeight: 1.7,
+};
+
+const buttonRowStyle = {
+  display: "flex",
+  gap: "12px",
+  flexWrap: "wrap",
+  marginTop: "22px",
+};
+
+const primaryLinkStyle = {
+  display: "inline-block",
+  backgroundColor: "#111827",
+  color: "white",
+  textDecoration: "none",
+  padding: "14px 20px",
+  borderRadius: "14px",
+  fontWeight: "700",
+};
+
+const secondaryLinkStyle = {
+  display: "inline-block",
+  backgroundColor: "white",
+  color: "#111827",
+  textDecoration: "none",
+  padding: "14px 20px",
+  borderRadius: "14px",
+  fontWeight: "700",
+  border: "1px solid #d1d5db",
+};
+
+const sectionTitleStyle = {
+  marginTop: 0,
+  marginBottom: "18px",
+  fontSize: "30px",
 };
 
 const gridStyle = {
   display: "grid",
-  gap: "12px",
-};
-
-const carBoxStyle = {
-  backgroundColor: "#f8fafc",
-  padding: "20px",
-  borderRadius: "16px",
-  border: "1px solid #e2e8f0",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: "16px",
 };
 
 const labelStyle = {
   display: "block",
   marginBottom: "8px",
-  fontWeight: "600",
+  fontWeight: "700",
   color: "#334155",
 };
 
 const inputStyle = {
   width: "100%",
-  padding: "12px",
+  padding: "13px",
   fontSize: "16px",
-  borderRadius: "10px",
+  borderRadius: "12px",
   border: "1px solid #cbd5e1",
   boxSizing: "border-box",
 };
 
 const buttonStyle = {
-  marginTop: "24px",
+  marginTop: "20px",
   width: "100%",
   padding: "16px",
-  backgroundColor: "black",
-  color: "white",
   border: "none",
-  borderRadius: "12px",
+  borderRadius: "14px",
+  backgroundColor: "#111827",
+  color: "white",
   fontSize: "16px",
-  fontWeight: "600",
+  fontWeight: "700",
   cursor: "pointer",
 };
 
-const errorBoxStyle = {
-  marginTop: "24px",
+const mutedTextStyle = {
+  color: "#64748b",
+  fontSize: "17px",
+};
+
+const errorStyle = {
   backgroundColor: "#fee2e2",
   color: "#991b1b",
   padding: "16px",
-  borderRadius: "12px",
+  borderRadius: "14px",
 };
 
-const resultBoxStyle = {
-  marginTop: "28px",
+const resultTopStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  gap: "20px",
+  flexWrap: "wrap",
+  marginBottom: "18px",
 };
 
-const winnerBoxStyle = {
-  marginBottom: "20px",
-  backgroundColor: "#dcfce7",
-  color: "#166534",
-  padding: "16px",
-  borderRadius: "12px",
+const smallLabelStyle = {
+  fontSize: "14px",
+  color: "#64748b",
+  marginBottom: "8px",
   fontWeight: "700",
-  fontSize: "18px",
+  textTransform: "uppercase",
 };
 
-const resultCardStyle = {
+const scoreStyle = {
+  fontSize: "32px",
+  fontWeight: "800",
+};
+
+const badgeStyle = {
+  color: "white",
+  padding: "10px 16px",
+  borderRadius: "999px",
+  fontWeight: "800",
+};
+
+const statsGridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: "14px",
+};
+
+const statStyle = {
   backgroundColor: "#f8fafc",
-  padding: "20px",
+  padding: "18px",
   borderRadius: "16px",
   border: "1px solid #e2e8f0",
 };
 
-const badgeStyle = {
-  display: "inline-block",
-  color: "white",
-  padding: "8px 14px",
-  borderRadius: "999px",
+const statValueStyle = {
+  fontSize: "22px",
+  fontWeight: "800",
+  color: "#111827",
+};
+
+const linkCardStyle = {
+  display: "block",
+  textDecoration: "none",
+  color: "#111827",
+  backgroundColor: "#f8fafc",
+  border: "1px solid #e2e8f0",
+  borderRadius: "14px",
+  padding: "16px",
   fontWeight: "700",
-  marginBottom: "14px",
+  lineHeight: 1.5,
 };
