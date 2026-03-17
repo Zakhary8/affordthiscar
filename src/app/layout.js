@@ -1,6 +1,9 @@
 import "./globals.css";
 import Image from "next/image";
 import Script from "next/script";
+import { PreferencesProvider } from "../context/PreferencesContext";
+import PreferencesBar from "../components/PreferencesBar";
+import LanguageAwareShell from "../components/LanguageAwareShell";
 
 export const metadata = {
   metadataBase: new URL("https://www.affordthiscar.com"),
@@ -10,20 +13,31 @@ export const metadata = {
   },
   description:
     "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
-};
-
-const navLinkStyle = {
-  textDecoration: "none",
-  color: "#111827",
-  fontWeight: "600",
-  fontSize: "15px",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "AffordThisCar",
+    description:
+      "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
+    url: "https://www.affordthiscar.com",
+    siteName: "AffordThisCar",
+    locale: "en_CA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AffordThisCar",
+    description:
+      "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-HHVYE4V8HS"
           strategy="afterInteractive"
@@ -46,81 +60,87 @@ export default function RootLayout({ children }) {
           color: "#111827",
         }}
       >
-        <header
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            padding: "18px 20px",
-            borderBottom: "1px solid #e5e7eb",
-            background: "#ffffff",
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-            gap: "14px",
-          }}
-        >
-          <a
-            href="/"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              textDecoration: "none",
-            }}
-          >
-            <Image
-              src="/logo.png"
-              alt="AffordThisCar logo"
-              width={260}
-              height={70}
-              priority
+        <PreferencesProvider>
+          <LanguageAwareShell>
+            <header
               style={{
-                width: "260px",
-                height: "auto",
-                objectFit: "contain",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                padding: "18px 20px 10px",
+                borderBottom: "1px solid #e5e7eb",
+                background: "#ffffff",
+                position: "sticky",
+                top: 0,
+                zIndex: 50,
+                gap: "14px",
               }}
-            />
-          </a>
+            >
+              <a
+                href="/"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  textDecoration: "none",
+                }}
+              >
+                <Image
+                  src="/logo.png"
+                  alt="AffordThisCar logo"
+                  width={260}
+                  height={70}
+                  priority
+                  style={{
+                    width: "260px",
+                    height: "auto",
+                    objectFit: "contain",
+                  }}
+                />
+              </a>
 
-          <nav
-            style={{
-              display: "flex",
-              gap: "18px",
-              alignItems: "center",
-              flexWrap: "wrap",
-              justifyContent: "center",
-            }}
-          >
-            <a href="/" style={navLinkStyle}>Calculator</a>
-            <a href="/compare" style={navLinkStyle}>Compare</a>
-            <a href="/ownership-cost" style={navLinkStyle}>Ownership Cost</a>
-            <a href="/deal-review" style={navLinkStyle}>Deal Review</a>
-            <a href="/car-payment/30000" style={navLinkStyle}>Payments</a>
-            <a href="/income-needed/30000" style={navLinkStyle}>Income Needed</a>
-          </nav>
-        </header>
+              <LanguageAwareShell.Nav />
 
-        <main
-          style={{
-            maxWidth: "1100px",
-            margin: "0 auto",
-            padding: "40px 20px",
-          }}
-        >
-          {children}
-        </main>
+              <PreferencesBar />
+            </header>
 
-        <footer
-          style={{
-            marginTop: "40px",
-            padding: "28px 20px",
-            borderTop: "1px solid #e5e7eb",
-            background: "#ffffff",
-            textAlign: "center",
-          }}
-        >
-          © 2026 AffordThisCar
-        </footer>
+            <main
+              style={{
+                maxWidth: "1100px",
+                margin: "0 auto",
+                padding: "40px 20px",
+              }}
+            >
+              {children}
+            </main>
+
+            <footer
+              style={{
+                marginTop: "40px",
+                padding: "28px 20px",
+                borderTop: "1px solid #e5e7eb",
+                background: "#ffffff",
+              }}
+            >
+              <div
+                style={{
+                  maxWidth: "1100px",
+                  margin: "0 auto",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "20px",
+                  flexWrap: "wrap",
+                }}
+              >
+                <div style={{ color: "#64748b", fontSize: "14px" }}>
+                  © 2026 AffordThisCar
+                </div>
+
+                <LanguageAwareShell.FooterNav />
+              </div>
+            </footer>
+          </LanguageAwareShell>
+        </PreferencesProvider>
       </body>
     </html>
   );

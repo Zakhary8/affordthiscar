@@ -1,11 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { usePreferences } from "../context/PreferencesContext";
 
 export default function Home() {
+  const {
+    preferences,
+    taxRate,
+    countryLabel,
+    subdivisionLabel,
+    safeSubdivisionKey,
+  } = usePreferences();
+
   const [income, setIncome] = useState("");
   const [frequency, setFrequency] = useState("yearly");
   const [expenses, setExpenses] = useState("");
+  const [carName, setCarName] = useState("");
   const [carPrice, setCarPrice] = useState("");
   const [downPayment, setDownPayment] = useState("");
   const [interestRate, setInterestRate] = useState("");
@@ -13,6 +23,23 @@ export default function Home() {
   const [insurance, setInsurance] = useState("");
   const [gas, setGas] = useState("");
   const [result, setResult] = useState(null);
+
+  const locale = useMemo(() => {
+    if (preferences.language === "fr") return "fr-CA";
+    if (preferences.language === "es") return "es-ES";
+    if (preferences.currency === "USD") return "en-US";
+    if (preferences.currency === "EUR") return "de-DE";
+    if (preferences.currency === "MXN") return "es-MX";
+    return "en-CA";
+  }, [preferences.language, preferences.currency]);
+
+  function formatCurrency(value) {
+    return Number(value || 0).toLocaleString(locale, {
+      style: "currency",
+      currency: preferences.currency,
+      maximumFractionDigits: 0,
+    });
+  }
 
   function getMonthlyIncome(amount, incomeFrequency) {
     const value = Number(amount);
@@ -28,7 +55,6 @@ export default function Home() {
     const numberOfPayments = termYears * 12;
 
     if (!numberOfPayments || numberOfPayments <= 0) return 0;
-
     if (monthlyRate === 0) return loanAmount / numberOfPayments;
 
     return (
@@ -58,49 +84,135 @@ export default function Home() {
     return "#ef4444";
   }
 
-  function formatCurrency(value) {
-    return value.toLocaleString("en-CA", {
-      style: "currency",
-      currency: "CAD",
-      maximumFractionDigits: 0,
-    });
+  function reverseCarPriceFromMonthlyBudget(
+    targetMonthlyCarCost,
+    insuranceCost,
+    gasCost,
+    maintenanceBuffer,
+    annualRate,
+    termYears,
+    downPaymentAmount,
+    localTaxRate
+  ) {
+    const paymentBudget =
+      targetMonthlyCarCost - insuranceCost - gasCost - maintenanceBuffer;
+
+    if (paymentBudget <= 0) return 0;
+
+    const monthlyRate = annualRate / 100 / 12;
+    const numberOfPayments = termYears * 12;
+
+    if (!numberOfPayments || numberOfPayments <= 0) return 0;
+
+    let supportedLoanAmount = 0;
+
+    if (monthlyRate === 0) {
+      supportedLoanAmount = paymentBudget * numberOfPayments;
+    } else {
+      supportedLoanAmount =
+        paymentBudget *
+        ((1 - Math.pow(1 + monthlyRate, -numberOfPayments)) / monthlyRate);
+    }
+
+    const preTaxAffordablePrice = Math.max(
+      0,
+      (supportedLoanAmount + downPaymentAmount) / (1 + localTaxRate)
+    );
+
+    return preTaxAffordablePrice;
   }
 
   function calculate() {
     const monthlyIncome = getMonthlyIncome(income, frequency);
     const monthlyExpenses = Number(expenses) || 0;
-    const price = Number(carPrice) || 0;
+    const basePrice = Number(carPrice) || 0;
     const down = Number(downPayment) || 0;
     const rate = Number(interestRate) || 0;
-    const years = Number(loanTerm) || 0;
+    const termYears = Number(loanTerm) || 0;
     const monthlyInsurance = Number(insurance) || 0;
     const monthlyGas = Number(gas) || 0;
 
-    if (!monthlyIncome || !price || !years) {
+    if (!monthlyIncome || !basePrice || !termYears) {
       setResult("Please fill in income, car price, and loan term.");
       return;
     }
 
-    const loanAmount = Math.max(price - down, 0);
-    const monthlyPayment = calculateMonthlyPayment(loanAmount, rate, years);
-    const maintenance = 75;
+    const taxedPrice = basePrice * (1 + taxRate);
+    const totalTaxAmount = taxedPrice - basePrice;
+    const loanAmount = Math.max(taxedPrice - down, 0);
+    const monthlyPayment = calculateMonthlyPayment(loanAmount, rate, termYears);
+
+    const maintenanceBuffer = 75;
     const totalMonthlyCarCost =
-      monthlyPayment + monthlyInsurance + monthlyGas + maintenance;
+      monthlyPayment + monthlyInsurance + monthlyGas + maintenanceBuffer;
 
     const carCostPercent = (totalMonthlyCarCost / monthlyIncome) * 100;
     const moneyLeft = monthlyIncome - monthlyExpenses - totalMonthlyCarCost;
     const score = calculateScore(carCostPercent, moneyLeft);
 
+    const safeTargetMonthlyCarCost = monthlyIncome * 0.15;
+    const stretchTargetMonthlyCarCost = monthlyIncome * 0.22;
+    const riskyTargetMonthlyCarCost = monthlyIncome * 0.3;
+
+    const safeCarPrice = Math.round(
+      reverseCarPriceFromMonthlyBudget(
+        safeTargetMonthlyCarCost,
+        monthlyInsurance,
+        monthlyGas,
+        maintenanceBuffer,
+        rate,
+        termYears,
+        down,
+        taxRate
+      )
+    );
+
+    const stretchCarPrice = Math.round(
+      reverseCarPriceFromMonthlyBudget(
+        stretchTargetMonthlyCarCost,
+        monthlyInsurance,
+        monthlyGas,
+        maintenanceBuffer,
+        rate,
+        termYears,
+        down,
+        taxRate
+      )
+    );
+
+    const riskyCarPrice = Math.round(
+      reverseCarPriceFromMonthlyBudget(
+        riskyTargetMonthlyCarCost,
+        monthlyInsurance,
+        monthlyGas,
+        maintenanceBuffer,
+        rate,
+        termYears,
+        down,
+        taxRate
+      )
+    );
+
     setResult({
+      carName,
       monthlyIncome,
       monthlyPayment,
       totalMonthlyCarCost,
       carCostPercent,
       moneyLeft,
-      maintenance,
+      maintenanceBuffer,
       score,
       verdict: getVerdict(score),
       scoreColor: getScoreColor(score),
+      taxedPrice,
+      basePrice,
+      totalTaxAmount,
+      taxRate,
+      safeCarPrice,
+      stretchCarPrice,
+      riskyCarPrice,
+      countryLabel,
+      subdivisionLabel,
     });
   }
 
@@ -112,10 +224,22 @@ export default function Home() {
           <h1 style={titleStyle}>Can You Actually Afford That Car?</h1>
           <p style={subtitleStyle}>
             Check affordability, compare vehicles, estimate ownership cost,
-            review dealership deals, and explore payment guides.
+            review dealership deals, and explore payment guides with your saved
+            language, currency, and tax region.
           </p>
 
+          <div style={pillRowStyle}>
+            <span style={pillStyle}>Language: {preferences.language.toUpperCase()}</span>
+            <span style={pillStyle}>Currency: {preferences.currency}</span>
+            <span style={pillStyle}>
+              Tax area: {countryLabel} / {subdivisionLabel}
+            </span>
+          </div>
+
           <div style={buttonRowStyle}>
+            <a href="/compare" style={secondaryLinkStyle}>
+              Compare Cars
+            </a>
             <a href="/car-payment/30000" style={secondaryLinkStyle}>
               Payment Guides
             </a>
@@ -130,9 +254,27 @@ export default function Home() {
       </section>
 
       <section style={cardStyle}>
-        <h2 style={sectionTitleStyle}>Affordability Calculator</h2>
+        <div style={sectionHeaderStyle}>
+          <h2 style={sectionTitleStyle}>Affordability Calculator</h2>
+          <p style={sectionSubtitleStyle}>
+            Your selected region is currently <strong>{subdivisionLabel}</strong> in{" "}
+            <strong>{countryLabel}</strong>, using a tax rate of{" "}
+            <strong>{(taxRate * 100).toFixed(3).replace(/\.?0+$/, "")}%</strong>.
+          </p>
+        </div>
 
         <div style={gridStyle}>
+          <div>
+            <label style={labelStyle}>Vehicle Name</label>
+            <input
+              type="text"
+              value={carName}
+              onChange={(e) => setCarName(e.target.value)}
+              placeholder="Mazda CX-5"
+              style={inputStyle}
+            />
+          </div>
+
           <div>
             <label style={labelStyle}>Income Amount</label>
             <input
@@ -170,7 +312,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Car Price</label>
+            <label style={labelStyle}>Vehicle Price Before Tax</label>
             <input
               type="number"
               value={carPrice}
@@ -192,7 +334,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Interest Rate</label>
+            <label style={labelStyle}>Interest Rate (%)</label>
             <input
               type="number"
               value={interestRate}
@@ -246,13 +388,12 @@ export default function Home() {
 
         {!result && (
           <p style={mutedTextStyle}>
-            Enter your numbers to see your affordability result.
+            Enter your numbers to see your affordability result with your saved
+            tax region and currency.
           </p>
         )}
 
-        {typeof result === "string" && (
-          <div style={errorStyle}>{result}</div>
-        )}
+        {typeof result === "string" && <div style={errorStyle}>{result}</div>}
 
         {result && typeof result === "object" && (
           <div>
@@ -274,17 +415,40 @@ export default function Home() {
 
             <div style={statsGridStyle}>
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Monthly Income</div>
+                <div style={smallLabelStyle}>Vehicle</div>
+                <div style={statValueStyle}>{result.carName || "Unnamed vehicle"}</div>
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Tax Region</div>
                 <div style={statValueStyle}>
-                  {formatCurrency(result.monthlyIncome)}
+                  {result.countryLabel} / {result.subdivisionLabel}
                 </div>
               </div>
 
               <div style={statStyle}>
+                <div style={smallLabelStyle}>Price Before Tax</div>
+                <div style={statValueStyle}>{formatCurrency(result.basePrice)}</div>
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Sales Tax Amount</div>
+                <div style={statValueStyle}>{formatCurrency(result.totalTaxAmount)}</div>
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Price After Tax</div>
+                <div style={statValueStyle}>{formatCurrency(result.taxedPrice)}</div>
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Monthly Income</div>
+                <div style={statValueStyle}>{formatCurrency(result.monthlyIncome)}</div>
+              </div>
+
+              <div style={statStyle}>
                 <div style={smallLabelStyle}>Monthly Payment</div>
-                <div style={statValueStyle}>
-                  {formatCurrency(result.monthlyPayment)}
-                </div>
+                <div style={statValueStyle}>{formatCurrency(result.monthlyPayment)}</div>
               </div>
 
               <div style={statStyle}>
@@ -303,15 +467,50 @@ export default function Home() {
 
               <div style={statStyle}>
                 <div style={smallLabelStyle}>Money Left</div>
-                <div style={statValueStyle}>
-                  {formatCurrency(result.moneyLeft)}
-                </div>
+                <div style={statValueStyle}>{formatCurrency(result.moneyLeft)}</div>
               </div>
 
               <div style={statStyle}>
                 <div style={smallLabelStyle}>Maintenance Buffer</div>
                 <div style={statValueStyle}>
-                  {formatCurrency(result.maintenance)}
+                  {formatCurrency(result.maintenanceBuffer)}
+                </div>
+              </div>
+
+              <div style={statStyle}>
+                <div style={smallLabelStyle}>Applied Tax Rate</div>
+                <div style={statValueStyle}>
+                  {(result.taxRate * 100).toFixed(3).replace(/\.?0+$/, "")}%
+                </div>
+              </div>
+            </div>
+
+            <div style={recommendationWrapStyle}>
+              <h3 style={recommendationTitleStyle}>Recommended Price Ranges</h3>
+
+              <div style={rangeGridStyle}>
+                <div style={{ ...rangeCardStyle, borderColor: "#bbf7d0" }}>
+                  <div style={{ ...rangeLabelStyle, color: "#15803d" }}>Safe</div>
+                  <div style={rangeValueStyle}>
+                    {formatCurrency(result.safeCarPrice)}
+                  </div>
+                  <div style={rangeNoteStyle}>Before tax vehicle price</div>
+                </div>
+
+                <div style={{ ...rangeCardStyle, borderColor: "#fde68a" }}>
+                  <div style={{ ...rangeLabelStyle, color: "#b45309" }}>Stretch</div>
+                  <div style={rangeValueStyle}>
+                    {formatCurrency(result.stretchCarPrice)}
+                  </div>
+                  <div style={rangeNoteStyle}>Before tax vehicle price</div>
+                </div>
+
+                <div style={{ ...rangeCardStyle, borderColor: "#fecaca" }}>
+                  <div style={{ ...rangeLabelStyle, color: "#b91c1c" }}>Risky</div>
+                  <div style={rangeValueStyle}>
+                    {formatCurrency(result.riskyCarPrice)}
+                  </div>
+                  <div style={rangeNoteStyle}>Before tax vehicle price</div>
                 </div>
               </div>
             </div>
@@ -343,6 +542,38 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      <section style={cardStyle}>
+        <h2 style={sectionTitleStyle}>Current Preference Debug</h2>
+        <div style={statsGridStyle}>
+          <div style={statStyle}>
+            <div style={smallLabelStyle}>Language</div>
+            <div style={statValueStyle}>{preferences.language}</div>
+          </div>
+          <div style={statStyle}>
+            <div style={smallLabelStyle}>Country</div>
+            <div style={statValueStyle}>{countryLabel}</div>
+          </div>
+          <div style={statStyle}>
+            <div style={smallLabelStyle}>Province / State</div>
+            <div style={statValueStyle}>{subdivisionLabel}</div>
+          </div>
+          <div style={statStyle}>
+            <div style={smallLabelStyle}>Subdivision Key</div>
+            <div style={statValueStyle}>{safeSubdivisionKey}</div>
+          </div>
+          <div style={statStyle}>
+            <div style={smallLabelStyle}>Currency</div>
+            <div style={statValueStyle}>{preferences.currency}</div>
+          </div>
+          <div style={statStyle}>
+            <div style={smallLabelStyle}>Tax Rate</div>
+            <div style={statValueStyle}>
+              {(taxRate * 100).toFixed(3).replace(/\.?0+$/, "")}%
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -350,7 +581,7 @@ export default function Home() {
 const pageStyle = {
   maxWidth: "1100px",
   margin: "0 auto",
-  padding: "40px 20px",
+  padding: "0",
 };
 
 const heroStyle = {
@@ -389,6 +620,24 @@ const subtitleStyle = {
   lineHeight: 1.7,
 };
 
+const pillRowStyle = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap",
+  marginTop: "18px",
+};
+
+const pillStyle = {
+  display: "inline-block",
+  padding: "10px 14px",
+  borderRadius: "999px",
+  backgroundColor: "#f8fafc",
+  border: "1px solid #e2e8f0",
+  fontSize: "14px",
+  fontWeight: "700",
+  color: "#334155",
+};
+
 const buttonRowStyle = {
   display: "flex",
   gap: "12px",
@@ -417,10 +666,21 @@ const secondaryLinkStyle = {
   border: "1px solid #d1d5db",
 };
 
+const sectionHeaderStyle = {
+  marginBottom: "18px",
+};
+
 const sectionTitleStyle = {
   marginTop: 0,
-  marginBottom: "18px",
+  marginBottom: "8px",
   fontSize: "30px",
+};
+
+const sectionSubtitleStyle = {
+  margin: 0,
+  color: "#64748b",
+  fontSize: "16px",
+  lineHeight: 1.6,
 };
 
 const gridStyle = {
@@ -516,6 +776,53 @@ const statValueStyle = {
   fontSize: "22px",
   fontWeight: "800",
   color: "#111827",
+};
+
+const recommendationWrapStyle = {
+  marginTop: "22px",
+  backgroundColor: "#f8fafc",
+  border: "1px solid #e2e8f0",
+  borderRadius: "20px",
+  padding: "22px",
+};
+
+const recommendationTitleStyle = {
+  marginTop: 0,
+  marginBottom: "16px",
+  fontSize: "24px",
+};
+
+const rangeGridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+  gap: "14px",
+};
+
+const rangeCardStyle = {
+  backgroundColor: "white",
+  border: "2px solid",
+  borderRadius: "16px",
+  padding: "18px",
+};
+
+const rangeLabelStyle = {
+  fontSize: "14px",
+  fontWeight: "800",
+  textTransform: "uppercase",
+  letterSpacing: "0.05em",
+  marginBottom: "8px",
+};
+
+const rangeValueStyle = {
+  fontSize: "24px",
+  fontWeight: "800",
+  color: "#111827",
+};
+
+const rangeNoteStyle = {
+  marginTop: "6px",
+  color: "#64748b",
+  fontSize: "13px",
 };
 
 const linkCardStyle = {
