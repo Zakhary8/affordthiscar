@@ -69,13 +69,13 @@ export default function RootLayout({ children }) {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              padding: "18px 20px 10px",
+              padding: "16px 20px 8px",
               borderBottom: "1px solid #e5e7eb",
               background: "#ffffff",
               position: "sticky",
               top: 0,
               zIndex: 50,
-              gap: "14px",
+              gap: "12px",
             }}
           >
             <a
@@ -93,9 +93,10 @@ export default function RootLayout({ children }) {
                 height={70}
                 priority
                 style={{
-                  width: "260px",
+                  width: "220px",
                   height: "auto",
                   objectFit: "contain",
+                  maxWidth: "100%",
                 }}
               />
             </a>
@@ -109,7 +110,7 @@ export default function RootLayout({ children }) {
             style={{
               maxWidth: "1100px",
               margin: "0 auto",
-              padding: "40px 20px",
+              padding: "28px 20px 40px",
             }}
           >
             {children}
