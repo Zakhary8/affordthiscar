@@ -9,7 +9,7 @@ function getLocalizedPath(language, type) {
     if (type === "ownership") return "/ownership-cost";
     if (type === "deal") return "/deal-review";
     if (type === "payments") return "/fr/paiement-auto/30000";
-    if (type === "income") return "/salary/70000";
+    if (type === "income") return "/fr/salaire/70000";
   }
 
   if (language === "es") {
@@ -18,7 +18,7 @@ function getLocalizedPath(language, type) {
     if (type === "ownership") return "/ownership-cost";
     if (type === "deal") return "/deal-review";
     if (type === "payments") return "/es/pago-auto/30000";
-    if (type === "income") return "/salary/70000";
+    if (type === "income") return "/es/salario/70000";
   }
 
   if (type === "home") return "/";
@@ -70,7 +70,7 @@ function getNavLabels(language) {
   };
 }
 
-function NavComponent() {
+export function LanguageAwareNav() {
   const { preferences } = usePreferences();
   const labels = getNavLabels(preferences.language);
 
@@ -106,7 +106,7 @@ function NavComponent() {
   );
 }
 
-function FooterNavComponent() {
+export function LanguageAwareFooterNav() {
   const { preferences } = usePreferences();
   const labels = getNavLabels(preferences.language);
 
@@ -139,13 +139,6 @@ function FooterNavComponent() {
     </div>
   );
 }
-
-export default function LanguageAwareShell({ children }) {
-  return children;
-}
-
-LanguageAwareShell.Nav = NavComponent;
-LanguageAwareShell.FooterNav = FooterNavComponent;
 
 const navLinkStyle = {
   textDecoration: "none",

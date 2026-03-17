@@ -3,7 +3,10 @@ import Image from "next/image";
 import Script from "next/script";
 import { PreferencesProvider } from "../context/PreferencesContext";
 import PreferencesBar from "../components/PreferencesBar";
-import LanguageAwareShell from "../components/LanguageAwareShell";
+import {
+  LanguageAwareNav,
+  LanguageAwareFooterNav,
+} from "../components/LanguageAwareShell";
 
 export const metadata = {
   metadataBase: new URL("https://www.affordthiscar.com"),
@@ -61,85 +64,83 @@ export default function RootLayout({ children }) {
         }}
       >
         <PreferencesProvider>
-          <LanguageAwareShell>
-            <header
+          <header
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              padding: "18px 20px 10px",
+              borderBottom: "1px solid #e5e7eb",
+              background: "#ffffff",
+              position: "sticky",
+              top: 0,
+              zIndex: 50,
+              gap: "14px",
+            }}
+          >
+            <a
+              href="/"
               style={{
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
-                padding: "18px 20px 10px",
-                borderBottom: "1px solid #e5e7eb",
-                background: "#ffffff",
-                position: "sticky",
-                top: 0,
-                zIndex: 50,
-                gap: "14px",
+                textDecoration: "none",
               }}
             >
-              <a
-                href="/"
+              <Image
+                src="/logo.png"
+                alt="AffordThisCar logo"
+                width={260}
+                height={70}
+                priority
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  textDecoration: "none",
+                  width: "260px",
+                  height: "auto",
+                  objectFit: "contain",
                 }}
-              >
-                <Image
-                  src="/logo.png"
-                  alt="AffordThisCar logo"
-                  width={260}
-                  height={70}
-                  priority
-                  style={{
-                    width: "260px",
-                    height: "auto",
-                    objectFit: "contain",
-                  }}
-                />
-              </a>
+              />
+            </a>
 
-              <LanguageAwareShell.Nav />
+            <LanguageAwareNav />
 
-              <PreferencesBar />
-            </header>
+            <PreferencesBar />
+          </header>
 
-            <main
+          <main
+            style={{
+              maxWidth: "1100px",
+              margin: "0 auto",
+              padding: "40px 20px",
+            }}
+          >
+            {children}
+          </main>
+
+          <footer
+            style={{
+              marginTop: "40px",
+              padding: "28px 20px",
+              borderTop: "1px solid #e5e7eb",
+              background: "#ffffff",
+            }}
+          >
+            <div
               style={{
                 maxWidth: "1100px",
                 margin: "0 auto",
-                padding: "40px 20px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "20px",
+                flexWrap: "wrap",
               }}
             >
-              {children}
-            </main>
-
-            <footer
-              style={{
-                marginTop: "40px",
-                padding: "28px 20px",
-                borderTop: "1px solid #e5e7eb",
-                background: "#ffffff",
-              }}
-            >
-              <div
-                style={{
-                  maxWidth: "1100px",
-                  margin: "0 auto",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: "20px",
-                  flexWrap: "wrap",
-                }}
-              >
-                <div style={{ color: "#64748b", fontSize: "14px" }}>
-                  © 2026 AffordThisCar
-                </div>
-
-                <LanguageAwareShell.FooterNav />
+              <div style={{ color: "#64748b", fontSize: "14px" }}>
+                © 2026 AffordThisCar
               </div>
-            </footer>
-          </LanguageAwareShell>
+
+              <LanguageAwareFooterNav />
+            </div>
+          </footer>
         </PreferencesProvider>
       </body>
     </html>

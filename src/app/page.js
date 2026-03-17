@@ -33,6 +33,229 @@ export default function Home() {
     return "en-CA";
   }, [preferences.language, preferences.currency]);
 
+  const text = useMemo(() => {
+    if (preferences.language === "fr") {
+      return {
+        heroEyebrow: "AffordThisCar",
+        heroTitle: "Pouvez-vous vraiment vous permettre cette voiture ?",
+        heroSubtitle:
+          "Calculez l abordabilite, comparez des vehicules, estimez le cout total de possession et analysez une offre de concessionnaire avec vos preferences enregistrees.",
+        compareCars: "Comparer voitures",
+        paymentGuides: "Guides de paiement",
+        incomeNeeded: "Revenu requis",
+        dealReview: "Analyse d offre",
+        calculatorTitle: "Calculateur d abordabilite",
+        calculatorSubtitle:
+          "Votre region fiscale, votre devise et votre langue sont maintenant conservees automatiquement entre les pages.",
+        vehicleName: "Nom du vehicule",
+        incomeAmount: "Revenu",
+        incomeFrequency: "Frequence du revenu",
+        monthlyExpenses: "Depenses mensuelles",
+        vehiclePrice: "Prix du vehicule avant taxes",
+        downPayment: "Mise de fonds",
+        interestRate: "Taux d interet (%)",
+        loanTerm: "Duree du pret (annees)",
+        monthlyInsurance: "Assurance mensuelle",
+        monthlyGas: "Essence mensuelle",
+        yearly: "Annuel",
+        monthly: "Mensuel",
+        biweekly: "Aux deux semaines",
+        weekly: "Hebdomadaire",
+        calculate: "Calculer",
+        results: "Resultats",
+        emptyResults:
+          "Entrez vos chiffres pour voir votre resultat d abordabilite selon votre devise et votre region fiscale enregistrees.",
+        fillRequired:
+          "Veuillez remplir le revenu, le prix du vehicule et la duree du pret.",
+        affordabilityScore: "Score d abordabilite",
+        vehicle: "Vehicule",
+        taxRegion: "Region fiscale",
+        priceBeforeTax: "Prix avant taxes",
+        salesTaxAmount: "Montant des taxes",
+        priceAfterTax: "Prix apres taxes",
+        monthlyIncome: "Revenu mensuel",
+        monthlyPayment: "Paiement mensuel",
+        trueMonthlyCost: "Vrai cout mensuel",
+        costPercent: "Pourcentage du revenu",
+        moneyLeft: "Reste du budget",
+        maintenanceBuffer: "Reserve entretien",
+        appliedTaxRate: "Taux de taxe applique",
+        recommendedRanges: "Fourchettes recommandees",
+        safe: "Securitaire",
+        stretch: "A surveiller",
+        risky: "Risque",
+        beforeTaxNote: "Prix du vehicule avant taxes",
+        popularPages: "Pages populaires",
+        frenchPage: "Page d abordabilite francaise",
+        spanishPage: "Page d abordabilite espagnole",
+        debugTitle: "Etat actuel des preferences",
+        language: "Langue",
+        country: "Pays",
+        provinceState: "Province / Etat",
+        subdivisionKey: "Cle subdivision",
+        currency: "Devise",
+        taxRateLabel: "Taux de taxe",
+      };
+    }
+
+    if (preferences.language === "es") {
+      return {
+        heroEyebrow: "AffordThisCar",
+        heroTitle: "Realmente puedes pagar ese auto?",
+        heroSubtitle:
+          "Calcula asequibilidad, compara vehiculos, estima el costo total de propiedad y revisa una oferta del concesionario con tus preferencias guardadas.",
+        compareCars: "Comparar autos",
+        paymentGuides: "Guias de pago",
+        incomeNeeded: "Ingreso necesario",
+        dealReview: "Revision de oferta",
+        calculatorTitle: "Calculadora de asequibilidad",
+        calculatorSubtitle:
+          "Tu region fiscal, moneda e idioma ahora se conservan automaticamente entre paginas.",
+        vehicleName: "Nombre del vehiculo",
+        incomeAmount: "Ingreso",
+        incomeFrequency: "Frecuencia del ingreso",
+        monthlyExpenses: "Gastos mensuales",
+        vehiclePrice: "Precio del vehiculo antes de impuestos",
+        downPayment: "Pago inicial",
+        interestRate: "Tasa de interes (%)",
+        loanTerm: "Plazo del prestamo (anos)",
+        monthlyInsurance: "Seguro mensual",
+        monthlyGas: "Gasolina mensual",
+        yearly: "Anual",
+        monthly: "Mensual",
+        biweekly: "Quincenal",
+        weekly: "Semanal",
+        calculate: "Calcular",
+        results: "Resultados",
+        emptyResults:
+          "Ingresa tus datos para ver tu resultado de asequibilidad con tu moneda y region fiscal guardadas.",
+        fillRequired:
+          "Completa ingreso, precio del vehiculo y plazo del prestamo.",
+        affordabilityScore: "Puntaje de asequibilidad",
+        vehicle: "Vehiculo",
+        taxRegion: "Region fiscal",
+        priceBeforeTax: "Precio antes de impuestos",
+        salesTaxAmount: "Impuestos",
+        priceAfterTax: "Precio despues de impuestos",
+        monthlyIncome: "Ingreso mensual",
+        monthlyPayment: "Pago mensual",
+        trueMonthlyCost: "Costo mensual real",
+        costPercent: "Porcentaje del ingreso",
+        moneyLeft: "Dinero restante",
+        maintenanceBuffer: "Reserva de mantenimiento",
+        appliedTaxRate: "Tasa de impuesto aplicada",
+        recommendedRanges: "Rangos recomendados",
+        safe: "Seguro",
+        stretch: "Ajustado",
+        risky: "Riesgoso",
+        beforeTaxNote: "Precio del vehiculo antes de impuestos",
+        popularPages: "Paginas populares",
+        frenchPage: "Pagina francesa de asequibilidad",
+        spanishPage: "Pagina espanola de asequibilidad",
+        debugTitle: "Estado actual de preferencias",
+        language: "Idioma",
+        country: "Pais",
+        provinceState: "Provincia / Estado",
+        subdivisionKey: "Clave subdivision",
+        currency: "Moneda",
+        taxRateLabel: "Tasa de impuesto",
+      };
+    }
+
+    return {
+      heroEyebrow: "AffordThisCar",
+      heroTitle: "Can You Actually Afford That Car?",
+      heroSubtitle:
+        "Check affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore payment guides with your saved preferences.",
+      compareCars: "Compare Cars",
+      paymentGuides: "Payment Guides",
+      incomeNeeded: "Income Needed",
+      dealReview: "Deal Review",
+      calculatorTitle: "Affordability Calculator",
+      calculatorSubtitle:
+        "Your tax region, currency, and language are now saved automatically across pages.",
+      vehicleName: "Vehicle Name",
+      incomeAmount: "Income Amount",
+      incomeFrequency: "Income Frequency",
+      monthlyExpenses: "Monthly Expenses",
+      vehiclePrice: "Vehicle Price Before Tax",
+      downPayment: "Down Payment",
+      interestRate: "Interest Rate (%)",
+      loanTerm: "Loan Term (Years)",
+      monthlyInsurance: "Monthly Insurance",
+      monthlyGas: "Monthly Gas",
+      yearly: "Yearly",
+      monthly: "Monthly",
+      biweekly: "Biweekly",
+      weekly: "Weekly",
+      calculate: "Calculate",
+      results: "Results",
+      emptyResults:
+        "Enter your numbers to see your affordability result with your saved currency and tax region.",
+      fillRequired: "Please fill in income, car price, and loan term.",
+      affordabilityScore: "Affordability Score",
+      vehicle: "Vehicle",
+      taxRegion: "Tax Region",
+      priceBeforeTax: "Price Before Tax",
+      salesTaxAmount: "Sales Tax Amount",
+      priceAfterTax: "Price After Tax",
+      monthlyIncome: "Monthly Income",
+      monthlyPayment: "Monthly Payment",
+      trueMonthlyCost: "True Monthly Cost",
+      costPercent: "Cost Percent of Income",
+      moneyLeft: "Money Left",
+      maintenanceBuffer: "Maintenance Buffer",
+      appliedTaxRate: "Applied Tax Rate",
+      recommendedRanges: "Recommended Price Ranges",
+      safe: "Safe",
+      stretch: "Stretch",
+      risky: "Risky",
+      beforeTaxNote: "Before tax vehicle price",
+      popularPages: "Popular Search Pages",
+      frenchPage: "French affordability page",
+      spanishPage: "Spanish affordability page",
+      debugTitle: "Current Preference Debug",
+      language: "Language",
+      country: "Country",
+      provinceState: "Province / State",
+      subdivisionKey: "Subdivision Key",
+      currency: "Currency",
+      taxRateLabel: "Tax Rate",
+    };
+  }, [preferences.language]);
+
+  const localizedLinks = useMemo(() => {
+    const isFr = preferences.language === "fr";
+    const isEs = preferences.language === "es";
+
+    return {
+      compare: "/compare",
+      dealReview: "/deal-review",
+      paymentGuides: isFr
+        ? "/fr/paiement-auto/30000"
+        : isEs
+        ? "/es/pago-auto/30000"
+        : "/car-payment/30000",
+      incomeNeeded: isFr
+        ? "/fr/salaire/70000"
+        : isEs
+        ? "/es/salario/70000"
+        : "/income-needed/30000",
+      salaryPage: isFr
+        ? "/fr/salaire/70000"
+        : isEs
+        ? "/es/salario/70000"
+        : "/salary/70000",
+      affordabilityPage: isFr
+        ? "/fr/puis-je-me-permettre-une-voiture/30000"
+        : isEs
+        ? "/es/puedo-permitirme-un-auto/30000"
+        : "/can-i-afford-a/30000",
+      frenchAffordability: "/fr/puis-je-me-permettre-une-voiture/30000",
+      spanishAffordability: "/es/puedo-permitirme-un-auto/30000",
+    };
+  }, [preferences.language]);
+
   function formatCurrency(value) {
     return Number(value || 0).toLocaleString(locale, {
       style: "currency",
@@ -73,6 +296,18 @@ export default function Home() {
   }
 
   function getVerdict(score) {
+    if (preferences.language === "fr") {
+      if (score >= 75) return text.safe;
+      if (score >= 50) return text.stretch;
+      return text.risky;
+    }
+
+    if (preferences.language === "es") {
+      if (score >= 75) return text.safe;
+      if (score >= 50) return text.stretch;
+      return text.risky;
+    }
+
     if (score >= 75) return "Safe";
     if (score >= 50) return "Stretch";
     return "Risky";
@@ -133,7 +368,7 @@ export default function Home() {
     const monthlyGas = Number(gas) || 0;
 
     if (!monthlyIncome || !basePrice || !termYears) {
-      setResult("Please fill in income, car price, and loan term.");
+      setResult(text.fillRequired);
       return;
     }
 
@@ -220,34 +455,34 @@ export default function Home() {
     <div style={pageStyle}>
       <section style={heroStyle}>
         <div style={cardStyle}>
-          <p style={eyebrowStyle}>AffordThisCar</p>
-          <h1 style={titleStyle}>Can You Actually Afford That Car?</h1>
-          <p style={subtitleStyle}>
-            Check affordability, compare vehicles, estimate ownership cost,
-            review dealership deals, and explore payment guides with your saved
-            language, currency, and tax region.
-          </p>
+          <p style={eyebrowStyle}>{text.heroEyebrow}</p>
+          <h1 style={titleStyle}>{text.heroTitle}</h1>
+          <p style={subtitleStyle}>{text.heroSubtitle}</p>
 
           <div style={pillRowStyle}>
-            <span style={pillStyle}>Language: {preferences.language.toUpperCase()}</span>
-            <span style={pillStyle}>Currency: {preferences.currency}</span>
             <span style={pillStyle}>
-              Tax area: {countryLabel} / {subdivisionLabel}
+              {text.language}: {preferences.language.toUpperCase()}
+            </span>
+            <span style={pillStyle}>
+              {text.currency}: {preferences.currency}
+            </span>
+            <span style={pillStyle}>
+              {text.taxRegion}: {countryLabel} / {subdivisionLabel}
             </span>
           </div>
 
           <div style={buttonRowStyle}>
-            <a href="/compare" style={secondaryLinkStyle}>
-              Compare Cars
+            <a href={localizedLinks.compare} style={secondaryLinkStyle}>
+              {text.compareCars}
             </a>
-            <a href="/car-payment/30000" style={secondaryLinkStyle}>
-              Payment Guides
+            <a href={localizedLinks.paymentGuides} style={secondaryLinkStyle}>
+              {text.paymentGuides}
             </a>
-            <a href="/income-needed/30000" style={secondaryLinkStyle}>
-              Income Needed
+            <a href={localizedLinks.incomeNeeded} style={secondaryLinkStyle}>
+              {text.incomeNeeded}
             </a>
-            <a href="/deal-review" style={primaryLinkStyle}>
-              Deal Review
+            <a href={localizedLinks.dealReview} style={primaryLinkStyle}>
+              {text.dealReview}
             </a>
           </div>
         </div>
@@ -255,17 +490,17 @@ export default function Home() {
 
       <section style={cardStyle}>
         <div style={sectionHeaderStyle}>
-          <h2 style={sectionTitleStyle}>Affordability Calculator</h2>
+          <h2 style={sectionTitleStyle}>{text.calculatorTitle}</h2>
           <p style={sectionSubtitleStyle}>
-            Your selected region is currently <strong>{subdivisionLabel}</strong> in{" "}
-            <strong>{countryLabel}</strong>, using a tax rate of{" "}
+            {text.calculatorSubtitle} <strong>{subdivisionLabel}</strong> in{" "}
+            <strong>{countryLabel}</strong>,{" "}
             <strong>{(taxRate * 100).toFixed(3).replace(/\.?0+$/, "")}%</strong>.
           </p>
         </div>
 
         <div style={gridStyle}>
           <div>
-            <label style={labelStyle}>Vehicle Name</label>
+            <label style={labelStyle}>{text.vehicleName}</label>
             <input
               type="text"
               value={carName}
@@ -276,7 +511,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Income Amount</label>
+            <label style={labelStyle}>{text.incomeAmount}</label>
             <input
               type="number"
               value={income}
@@ -287,21 +522,21 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Income Frequency</label>
+            <label style={labelStyle}>{text.incomeFrequency}</label>
             <select
               value={frequency}
               onChange={(e) => setFrequency(e.target.value)}
               style={inputStyle}
             >
-              <option value="yearly">Yearly</option>
-              <option value="monthly">Monthly</option>
-              <option value="biweekly">Biweekly</option>
-              <option value="weekly">Weekly</option>
+              <option value="yearly">{text.yearly}</option>
+              <option value="monthly">{text.monthly}</option>
+              <option value="biweekly">{text.biweekly}</option>
+              <option value="weekly">{text.weekly}</option>
             </select>
           </div>
 
           <div>
-            <label style={labelStyle}>Monthly Expenses</label>
+            <label style={labelStyle}>{text.monthlyExpenses}</label>
             <input
               type="number"
               value={expenses}
@@ -312,7 +547,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Vehicle Price Before Tax</label>
+            <label style={labelStyle}>{text.vehiclePrice}</label>
             <input
               type="number"
               value={carPrice}
@@ -323,7 +558,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Down Payment</label>
+            <label style={labelStyle}>{text.downPayment}</label>
             <input
               type="number"
               value={downPayment}
@@ -334,7 +569,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Interest Rate (%)</label>
+            <label style={labelStyle}>{text.interestRate}</label>
             <input
               type="number"
               value={interestRate}
@@ -345,7 +580,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Loan Term (Years)</label>
+            <label style={labelStyle}>{text.loanTerm}</label>
             <input
               type="number"
               value={loanTerm}
@@ -356,7 +591,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Monthly Insurance</label>
+            <label style={labelStyle}>{text.monthlyInsurance}</label>
             <input
               type="number"
               value={insurance}
@@ -367,7 +602,7 @@ export default function Home() {
           </div>
 
           <div>
-            <label style={labelStyle}>Monthly Gas</label>
+            <label style={labelStyle}>{text.monthlyGas}</label>
             <input
               type="number"
               value={gas}
@@ -379,19 +614,14 @@ export default function Home() {
         </div>
 
         <button onClick={calculate} style={buttonStyle}>
-          Calculate
+          {text.calculate}
         </button>
       </section>
 
       <section style={cardStyle}>
-        <h2 style={sectionTitleStyle}>Results</h2>
+        <h2 style={sectionTitleStyle}>{text.results}</h2>
 
-        {!result && (
-          <p style={mutedTextStyle}>
-            Enter your numbers to see your affordability result with your saved
-            tax region and currency.
-          </p>
-        )}
+        {!result && <p style={mutedTextStyle}>{text.emptyResults}</p>}
 
         {typeof result === "string" && <div style={errorStyle}>{result}</div>}
 
@@ -399,7 +629,7 @@ export default function Home() {
           <div>
             <div style={resultTopStyle}>
               <div>
-                <div style={smallLabelStyle}>Affordability Score</div>
+                <div style={smallLabelStyle}>{text.affordabilityScore}</div>
                 <div style={scoreStyle}>{result.score}/100</div>
               </div>
 
@@ -415,70 +645,70 @@ export default function Home() {
 
             <div style={statsGridStyle}>
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Vehicle</div>
+                <div style={smallLabelStyle}>{text.vehicle}</div>
                 <div style={statValueStyle}>{result.carName || "Unnamed vehicle"}</div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Tax Region</div>
+                <div style={smallLabelStyle}>{text.taxRegion}</div>
                 <div style={statValueStyle}>
                   {result.countryLabel} / {result.subdivisionLabel}
                 </div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Price Before Tax</div>
+                <div style={smallLabelStyle}>{text.priceBeforeTax}</div>
                 <div style={statValueStyle}>{formatCurrency(result.basePrice)}</div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Sales Tax Amount</div>
+                <div style={smallLabelStyle}>{text.salesTaxAmount}</div>
                 <div style={statValueStyle}>{formatCurrency(result.totalTaxAmount)}</div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Price After Tax</div>
+                <div style={smallLabelStyle}>{text.priceAfterTax}</div>
                 <div style={statValueStyle}>{formatCurrency(result.taxedPrice)}</div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Monthly Income</div>
+                <div style={smallLabelStyle}>{text.monthlyIncome}</div>
                 <div style={statValueStyle}>{formatCurrency(result.monthlyIncome)}</div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Monthly Payment</div>
+                <div style={smallLabelStyle}>{text.monthlyPayment}</div>
                 <div style={statValueStyle}>{formatCurrency(result.monthlyPayment)}</div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>True Monthly Car Cost</div>
+                <div style={smallLabelStyle}>{text.trueMonthlyCost}</div>
                 <div style={statValueStyle}>
                   {formatCurrency(result.totalMonthlyCarCost)}
                 </div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Cost Percent of Income</div>
+                <div style={smallLabelStyle}>{text.costPercent}</div>
                 <div style={statValueStyle}>
                   {result.carCostPercent.toFixed(1)}%
                 </div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Money Left</div>
+                <div style={smallLabelStyle}>{text.moneyLeft}</div>
                 <div style={statValueStyle}>{formatCurrency(result.moneyLeft)}</div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Maintenance Buffer</div>
+                <div style={smallLabelStyle}>{text.maintenanceBuffer}</div>
                 <div style={statValueStyle}>
                   {formatCurrency(result.maintenanceBuffer)}
                 </div>
               </div>
 
               <div style={statStyle}>
-                <div style={smallLabelStyle}>Applied Tax Rate</div>
+                <div style={smallLabelStyle}>{text.appliedTaxRate}</div>
                 <div style={statValueStyle}>
                   {(result.taxRate * 100).toFixed(3).replace(/\.?0+$/, "")}%
                 </div>
@@ -486,31 +716,31 @@ export default function Home() {
             </div>
 
             <div style={recommendationWrapStyle}>
-              <h3 style={recommendationTitleStyle}>Recommended Price Ranges</h3>
+              <h3 style={recommendationTitleStyle}>{text.recommendedRanges}</h3>
 
               <div style={rangeGridStyle}>
                 <div style={{ ...rangeCardStyle, borderColor: "#bbf7d0" }}>
-                  <div style={{ ...rangeLabelStyle, color: "#15803d" }}>Safe</div>
+                  <div style={{ ...rangeLabelStyle, color: "#15803d" }}>{text.safe}</div>
                   <div style={rangeValueStyle}>
                     {formatCurrency(result.safeCarPrice)}
                   </div>
-                  <div style={rangeNoteStyle}>Before tax vehicle price</div>
+                  <div style={rangeNoteStyle}>{text.beforeTaxNote}</div>
                 </div>
 
                 <div style={{ ...rangeCardStyle, borderColor: "#fde68a" }}>
-                  <div style={{ ...rangeLabelStyle, color: "#b45309" }}>Stretch</div>
+                  <div style={{ ...rangeLabelStyle, color: "#b45309" }}>{text.stretch}</div>
                   <div style={rangeValueStyle}>
                     {formatCurrency(result.stretchCarPrice)}
                   </div>
-                  <div style={rangeNoteStyle}>Before tax vehicle price</div>
+                  <div style={rangeNoteStyle}>{text.beforeTaxNote}</div>
                 </div>
 
                 <div style={{ ...rangeCardStyle, borderColor: "#fecaca" }}>
-                  <div style={{ ...rangeLabelStyle, color: "#b91c1c" }}>Risky</div>
+                  <div style={{ ...rangeLabelStyle, color: "#b91c1c" }}>{text.risky}</div>
                   <div style={rangeValueStyle}>
                     {formatCurrency(result.riskyCarPrice)}
                   </div>
-                  <div style={rangeNoteStyle}>Before tax vehicle price</div>
+                  <div style={rangeNoteStyle}>{text.beforeTaxNote}</div>
                 </div>
               </div>
             </div>
@@ -519,55 +749,55 @@ export default function Home() {
       </section>
 
       <section style={cardStyle}>
-        <h2 style={sectionTitleStyle}>Popular Search Pages</h2>
+        <h2 style={sectionTitleStyle}>{text.popularPages}</h2>
 
         <div style={gridStyle}>
-          <a href="/salary/70000" style={linkCardStyle}>
+          <a href={localizedLinks.salaryPage} style={linkCardStyle}>
             What car can I afford with a 70000 salary
           </a>
-          <a href="/can-i-afford-a/30000" style={linkCardStyle}>
+          <a href={localizedLinks.affordabilityPage} style={linkCardStyle}>
             Can I afford a 30000 car
           </a>
-          <a href="/car-payment/30000" style={linkCardStyle}>
+          <a href={localizedLinks.paymentGuides} style={linkCardStyle}>
             Monthly payment on a 30000 car
           </a>
-          <a href="/income-needed/30000" style={linkCardStyle}>
+          <a href={localizedLinks.incomeNeeded} style={linkCardStyle}>
             Income needed for a 30000 car
           </a>
-          <a href="/fr/puis-je-me-permettre-une-voiture/30000" style={linkCardStyle}>
-            French affordability page
+          <a href={localizedLinks.frenchAffordability} style={linkCardStyle}>
+            {text.frenchPage}
           </a>
-          <a href="/es/puedo-permitirme-un-auto/30000" style={linkCardStyle}>
-            Spanish affordability page
+          <a href={localizedLinks.spanishAffordability} style={linkCardStyle}>
+            {text.spanishPage}
           </a>
         </div>
       </section>
 
       <section style={cardStyle}>
-        <h2 style={sectionTitleStyle}>Current Preference Debug</h2>
+        <h2 style={sectionTitleStyle}>{text.debugTitle}</h2>
         <div style={statsGridStyle}>
           <div style={statStyle}>
-            <div style={smallLabelStyle}>Language</div>
+            <div style={smallLabelStyle}>{text.language}</div>
             <div style={statValueStyle}>{preferences.language}</div>
           </div>
           <div style={statStyle}>
-            <div style={smallLabelStyle}>Country</div>
+            <div style={smallLabelStyle}>{text.country}</div>
             <div style={statValueStyle}>{countryLabel}</div>
           </div>
           <div style={statStyle}>
-            <div style={smallLabelStyle}>Province / State</div>
+            <div style={smallLabelStyle}>{text.provinceState}</div>
             <div style={statValueStyle}>{subdivisionLabel}</div>
           </div>
           <div style={statStyle}>
-            <div style={smallLabelStyle}>Subdivision Key</div>
+            <div style={smallLabelStyle}>{text.subdivisionKey}</div>
             <div style={statValueStyle}>{safeSubdivisionKey}</div>
           </div>
           <div style={statStyle}>
-            <div style={smallLabelStyle}>Currency</div>
+            <div style={smallLabelStyle}>{text.currency}</div>
             <div style={statValueStyle}>{preferences.currency}</div>
           </div>
           <div style={statStyle}>
-            <div style={smallLabelStyle}>Tax Rate</div>
+            <div style={smallLabelStyle}>{text.taxRateLabel}</div>
             <div style={statValueStyle}>
               {(taxRate * 100).toFixed(3).replace(/\.?0+$/, "")}%
             </div>
