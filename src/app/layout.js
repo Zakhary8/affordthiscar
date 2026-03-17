@@ -3,10 +3,7 @@ import Image from "next/image";
 import Script from "next/script";
 import { PreferencesProvider } from "../context/PreferencesContext";
 import PreferencesBar from "../components/PreferencesBar";
-import {
-  LanguageAwareNav,
-  LanguageAwareFooterNav,
-} from "../components/LanguageAwareShell";
+import { HeaderNav, FooterNav } from "../components/HeaderNav";
 
 export const metadata = {
   metadataBase: new URL("https://www.affordthiscar.com"),
@@ -101,7 +98,7 @@ export default function RootLayout({ children }) {
               />
             </a>
 
-            <LanguageAwareNav />
+            <HeaderNav />
 
             <PreferencesBar />
           </header>
@@ -139,7 +136,7 @@ export default function RootLayout({ children }) {
                 © 2026 AffordThisCar
               </div>
 
-              <LanguageAwareFooterNav />
+              <FooterNav />
             </div>
           </footer>
         </PreferencesProvider>

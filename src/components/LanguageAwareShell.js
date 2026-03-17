@@ -10,6 +10,7 @@ function getLocalizedPath(language, type) {
     if (type === "deal") return "/deal-review";
     if (type === "payments") return "/fr/paiement-auto/30000";
     if (type === "income") return "/fr/salaire/70000";
+    if (type === "lease") return "/lease-vs-finance";
   }
 
   if (language === "es") {
@@ -19,6 +20,7 @@ function getLocalizedPath(language, type) {
     if (type === "deal") return "/deal-review";
     if (type === "payments") return "/es/pago-auto/30000";
     if (type === "income") return "/es/salario/70000";
+    if (type === "lease") return "/lease-vs-finance";
   }
 
   if (type === "home") return "/";
@@ -27,6 +29,7 @@ function getLocalizedPath(language, type) {
   if (type === "deal") return "/deal-review";
   if (type === "payments") return "/car-payment/30000";
   if (type === "income") return "/income-needed/30000";
+  if (type === "lease") return "/lease-vs-finance";
 
   return "/";
 }
@@ -40,6 +43,7 @@ function getNavLabels(language) {
       deal: "Analyse d offre",
       payments: "Paiements",
       income: "Revenu requis",
+      lease: "Location vs financement",
       home: "Accueil",
       compareCars: "Comparer voitures",
     };
@@ -53,6 +57,7 @@ function getNavLabels(language) {
       deal: "Revision de oferta",
       payments: "Pagos",
       income: "Ingreso necesario",
+      lease: "Arrendar vs financiar",
       home: "Inicio",
       compareCars: "Comparar autos",
     };
@@ -65,6 +70,7 @@ function getNavLabels(language) {
     deal: "Deal Review",
     payments: "Payments",
     income: "Income Needed",
+    lease: "Lease vs Finance",
     home: "Home",
     compareCars: "Compare Cars",
   };
@@ -102,6 +108,9 @@ export function LanguageAwareNav() {
       <a href={getLocalizedPath(preferences.language, "income")} style={navLinkStyle}>
         {labels.income}
       </a>
+      <a href={getLocalizedPath(preferences.language, "lease")} style={navLinkStyle}>
+        {labels.lease}
+      </a>
     </nav>
   );
 }
@@ -135,6 +144,9 @@ export function LanguageAwareFooterNav() {
       </a>
       <a href={getLocalizedPath(preferences.language, "income")} style={navLinkStyle}>
         {labels.income}
+      </a>
+      <a href={getLocalizedPath(preferences.language, "lease")} style={navLinkStyle}>
+        {labels.lease}
       </a>
     </div>
   );
