@@ -3,6 +3,89 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePreferences } from "../context/PreferencesContext";
 
+function getRedirectPath(currentPath, newLanguage) {
+  const exactMap = {
+    "/": {
+      en: "/",
+      fr: "/",
+      es: "/",
+    },
+    "/compare": {
+      en: "/compare",
+      fr: "/compare",
+      es: "/compare",
+    },
+    "/ownership-cost": {
+      en: "/ownership-cost",
+      fr: "/ownership-cost",
+      es: "/ownership-cost",
+    },
+    "/deal-review": {
+      en: "/deal-review",
+      fr: "/deal-review",
+      es: "/deal-review",
+    },
+    "/car-payment/30000": {
+      en: "/car-payment/30000",
+      fr: "/fr/paiement-auto/30000",
+      es: "/es/pago-auto/30000",
+    },
+    "/fr/paiement-auto/30000": {
+      en: "/car-payment/30000",
+      fr: "/fr/paiement-auto/30000",
+      es: "/es/pago-auto/30000",
+    },
+    "/es/pago-auto/30000": {
+      en: "/car-payment/30000",
+      fr: "/fr/paiement-auto/30000",
+      es: "/es/pago-auto/30000",
+    },
+    "/income-needed/30000": {
+      en: "/income-needed/30000",
+      fr: "/fr/salaire/70000",
+      es: "/es/salario/70000",
+    },
+    "/salary/70000": {
+      en: "/salary/70000",
+      fr: "/fr/salaire/70000",
+      es: "/es/salario/70000",
+    },
+    "/fr/salaire/70000": {
+      en: "/salary/70000",
+      fr: "/fr/salaire/70000",
+      es: "/es/salario/70000",
+    },
+    "/es/salario/70000": {
+      en: "/salary/70000",
+      fr: "/fr/salaire/70000",
+      es: "/es/salario/70000",
+    },
+    "/can-i-afford-a/30000": {
+      en: "/can-i-afford-a/30000",
+      fr: "/fr/puis-je-me-permettre-une-voiture/30000",
+      es: "/es/puedo-permitirme-un-auto/30000",
+    },
+    "/fr/puis-je-me-permettre-une-voiture/30000": {
+      en: "/can-i-afford-a/30000",
+      fr: "/fr/puis-je-me-permettre-une-voiture/30000",
+      es: "/es/puedo-permitirme-un-auto/30000",
+    },
+    "/es/puedo-permitirme-un-auto/30000": {
+      en: "/can-i-afford-a/30000",
+      fr: "/fr/puis-je-me-permettre-une-voiture/30000",
+      es: "/es/puedo-permitirme-un-auto/30000",
+    },
+  };
+
+  if (exactMap[currentPath] && exactMap[currentPath][newLanguage]) {
+    return exactMap[currentPath][newLanguage];
+  }
+
+  if (newLanguage === "fr") return "/";
+  if (newLanguage === "es") return "/";
+  return "/";
+}
+
 export default function PreferencesBar() {
   const {
     preferences,
@@ -64,7 +147,17 @@ export default function PreferencesBar() {
             <label style={labelStyle}>Language</label>
             <select
               value={preferences.language}
-              onChange={(e) => updateLanguage(e.target.value)}
+              onChange={(e) => {
+                const newLanguage = e.target.value;
+                updateLanguage(newLanguage);
+
+                const currentPath = window.location.pathname;
+                const newPath = getRedirectPath(currentPath, newLanguage);
+
+                if (newPath !== currentPath) {
+                  window.location.href = newPath;
+                }
+              }}
               style={selectStyle}
             >
               <option value="en">English</option>
