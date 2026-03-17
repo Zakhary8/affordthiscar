@@ -40,13 +40,12 @@ function getNavLabels(language) {
     return {
       calculator: "Calculateur",
       compare: "Comparer",
-      ownership: "Cout de possession",
-      deal: "Analyse d offre",
+      ownership: "Possession",
+      deal: "Offre",
       payments: "Paiements",
-      income: "Revenu requis",
+      income: "Revenu",
       lease: "Location vs financement",
       menu: "Menu",
-      close: "Fermer",
       home: "Accueil",
       compareCars: "Comparer voitures",
     };
@@ -57,12 +56,11 @@ function getNavLabels(language) {
       calculator: "Calculadora",
       compare: "Comparar",
       ownership: "Costo total",
-      deal: "Revision de oferta",
+      deal: "Oferta",
       payments: "Pagos",
-      income: "Ingreso necesario",
+      income: "Ingreso",
       lease: "Arrendar vs financiar",
       menu: "Menu",
-      close: "Cerrar",
       home: "Inicio",
       compareCars: "Comparar autos",
     };
@@ -71,13 +69,12 @@ function getNavLabels(language) {
   return {
     calculator: "Calculator",
     compare: "Compare",
-    ownership: "Ownership Cost",
+    ownership: "Ownership",
     deal: "Deal Review",
     payments: "Payments",
-    income: "Income Needed",
+    income: "Income",
     lease: "Lease vs Finance",
     menu: "Menu",
-    close: "Close",
     home: "Home",
     compareCars: "Compare Cars",
   };
@@ -102,7 +99,6 @@ export function HeaderNav() {
 
     handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -118,37 +114,32 @@ export function HeaderNav() {
 
   if (!isMobile) {
     return (
-      <nav
-        style={{
-          display: "flex",
-          gap: "18px",
-          alignItems: "center",
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
-        {navItems.map((item) => (
-          <a
-            key={item.key}
-            href={getLocalizedPath(preferences.language, item.key)}
-            style={navLinkStyle}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
+      <div style={desktopWrapStyle}>
+        <nav
+          style={{
+            display: "flex",
+            gap: "18px",
+            alignItems: "center",
+            flexWrap: "wrap",
+            justifyContent: "center",
+          }}
+        >
+          {navItems.map((item) => (
+            <a
+              key={item.key}
+              href={getLocalizedPath(preferences.language, item.key)}
+              style={navLinkStyle}
+            >
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      </div>
     );
   }
 
   return (
-    <div
-      style={{
-        width: "100%",
-        maxWidth: "1100px",
-        padding: "0 20px",
-        boxSizing: "border-box",
-      }}
-    >
+    <div style={mobileWrapStyle}>
       <button
         type="button"
         onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -212,6 +203,14 @@ export function FooterNav() {
     </div>
   );
 }
+
+const desktopWrapStyle = {
+  width: "100%",
+};
+
+const mobileWrapStyle = {
+  width: "100%",
+};
 
 const navLinkStyle = {
   textDecoration: "none",

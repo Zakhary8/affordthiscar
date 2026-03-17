@@ -63,51 +63,66 @@ export default function RootLayout({ children }) {
         <PreferencesProvider>
           <header
             style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              padding: "16px 20px 8px",
-              borderBottom: "1px solid #e5e7eb",
-              background: "#ffffff",
               position: "sticky",
               top: 0,
               zIndex: 50,
-              gap: "12px",
+              background: "#ffffff",
+              borderBottom: "1px solid #e5e7eb",
             }}
           >
-            <a
-              href="/"
+            <div
               style={{
+                maxWidth: "1100px",
+                margin: "0 auto",
+                padding: "14px 20px",
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
-                textDecoration: "none",
+                gap: "10px",
               }}
             >
-              <Image
-                src="/logo.png"
-                alt="AffordThisCar logo"
-                width={260}
-                height={70}
-                priority
+              <a
+                href="/"
                 style={{
-                  width: "220px",
-                  height: "auto",
-                  objectFit: "contain",
-                  maxWidth: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  textDecoration: "none",
                 }}
-              />
-            </a>
+              >
+                <Image
+                  src="/logo.png"
+                  alt="AffordThisCar logo"
+                  width={260}
+                  height={70}
+                  priority
+                  style={{
+                    width: "210px",
+                    height: "auto",
+                    objectFit: "contain",
+                    maxWidth: "100%",
+                  }}
+                />
+              </a>
 
-            <HeaderNav />
-
-            <PreferencesBar />
+              <HeaderNav />
+            </div>
           </header>
+
+          <div
+            style={{
+              maxWidth: "1100px",
+              margin: "0 auto",
+              padding: "14px 20px 0",
+            }}
+          >
+            <PreferencesBar />
+          </div>
 
           <main
             style={{
               maxWidth: "1100px",
               margin: "0 auto",
-              padding: "28px 20px 40px",
+              padding: "20px 20px 40px",
             }}
           >
             {children}

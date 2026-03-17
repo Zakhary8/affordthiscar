@@ -5,16 +5,8 @@ import { usePreferences } from "../context/PreferencesContext";
 
 function getRedirectPath(currentPath, newLanguage) {
   const exactMap = {
-    "/": {
-      en: "/",
-      fr: "/",
-      es: "/",
-    },
-    "/compare": {
-      en: "/compare",
-      fr: "/compare",
-      es: "/compare",
-    },
+    "/": { en: "/", fr: "/", es: "/" },
+    "/compare": { en: "/compare", fr: "/compare", es: "/compare" },
     "/ownership-cost": {
       en: "/ownership-cost",
       fr: "/ownership-cost",
@@ -81,8 +73,6 @@ function getRedirectPath(currentPath, newLanguage) {
     return exactMap[currentPath][newLanguage];
   }
 
-  if (newLanguage === "fr") return "/";
-  if (newLanguage === "es") return "/";
   return "/";
 }
 
@@ -97,13 +87,13 @@ export default function PreferencesBar() {
   } = usePreferences();
 
   const [isMobile, setIsMobile] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     function handleResize() {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-      setIsOpen(!mobile);
+      setIsOpen(false);
     }
 
     handleResize();
@@ -119,10 +109,6 @@ export default function PreferencesBar() {
     <div
       style={{
         width: "100%",
-        maxWidth: "1100px",
-        margin: "0 auto",
-        padding: "0 20px 12px",
-        boxSizing: "border-box",
       }}
     >
       <button
@@ -223,15 +209,15 @@ const toggleButtonStyle = {
   padding: "12px 14px",
   borderRadius: "14px",
   border: "1px solid #cbd5e1",
-  backgroundColor: "#f8fafc",
+  backgroundColor: "#ffffff",
   color: "#111827",
   fontSize: "15px",
   fontWeight: "700",
   cursor: "pointer",
-  marginBottom: "10px",
 };
 
 const panelStyle = {
+  marginTop: "10px",
   display: "grid",
   gap: "12px",
   backgroundColor: "#ffffff",
