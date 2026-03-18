@@ -5,16 +5,6 @@ import { PreferencesProvider } from "../context/PreferencesContext";
 import PreferencesBar from "../components/PreferencesBar";
 import { HeaderNav, FooterNav } from "../components/HeaderNav";
 
-export const metadata = {
-  metadataBase: new URL("https://www.affordthiscar.com"),
-  title: {
-    default: "AffordThisCar",
-    template: "%s | AffordThisCar",
-  },
-  description:
-    "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
-};
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
@@ -42,7 +32,7 @@ export default function RootLayout({ children }) {
         }}
       >
         <PreferencesProvider>
-          {/* 🔥 BIG HEADER */}
+          {/* 🔥 MASSIVE LOGO HEADER */}
           <div
             style={{
               background: "#ffffff",
@@ -53,7 +43,7 @@ export default function RootLayout({ children }) {
               style={{
                 maxWidth: "1100px",
                 margin: "0 auto",
-                padding: "24px 20px 20px",
+                padding: "32px 20px 26px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -63,23 +53,21 @@ export default function RootLayout({ children }) {
                 href="/"
                 style={{
                   display: "flex",
-                  alignItems: "center",
                   justifyContent: "center",
-                  textDecoration: "none",
                   width: "100%",
+                  textDecoration: "none",
                 }}
               >
                 <Image
                   src="/logo.png"
                   alt="AffordThisCar logo"
-                  width={400}
-                  height={120}
+                  width={520}
+                  height={150}
                   priority
                   style={{
-                    width: "clamp(260px, 55vw, 420px)",
+                    width: "clamp(300px, 70vw, 520px)",
                     height: "auto",
                     objectFit: "contain",
-                    display: "block",
                   }}
                 />
               </a>
@@ -91,7 +79,7 @@ export default function RootLayout({ children }) {
             style={{
               maxWidth: "1100px",
               margin: "0 auto",
-              padding: "16px 20px 0",
+              padding: "18px 20px 0",
             }}
           >
             <HeaderNav />
@@ -102,7 +90,7 @@ export default function RootLayout({ children }) {
             style={{
               maxWidth: "1100px",
               margin: "0 auto",
-              padding: "16px 20px 0",
+              padding: "18px 20px 0",
             }}
           >
             <PreferencesBar />
@@ -113,7 +101,7 @@ export default function RootLayout({ children }) {
             style={{
               maxWidth: "1100px",
               margin: "0 auto",
-              padding: "24px 20px 40px",
+              padding: "26px 20px 40px",
             }}
           >
             {children}
