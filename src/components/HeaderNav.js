@@ -210,6 +210,7 @@ const desktopWrapStyle = {
 
 const mobileWrapStyle = {
   width: "100%",
+  position: "relative",
 };
 
 const navLinkStyle = {
@@ -242,13 +243,18 @@ const menuButtonStyle = {
 };
 
 const mobileMenuPanelStyle = {
-  marginTop: "10px",
+  position: "absolute",
+  top: "52px",
+  right: 0,
+  width: "260px",
+  zIndex: 1200,
   display: "grid",
   gap: "10px",
   backgroundColor: "#ffffff",
   border: "1px solid #e2e8f0",
   borderRadius: "16px",
   padding: "14px",
+  boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
 };
 
 const mobileNavLinkStyle = {
