@@ -71,7 +71,7 @@ export default function RootLayout({ children }) {
               style={{
                 maxWidth: "1100px",
                 margin: "0 auto",
-                padding: "10px 20px",
+                padding: "18px 20px 16px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -82,20 +82,22 @@ export default function RootLayout({ children }) {
                 style={{
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   textDecoration: "none",
+                  width: "100%",
                 }}
               >
                 <Image
                   src="/logo.png"
                   alt="AffordThisCar logo"
-                  width={180}
-                  height={50}
+                  width={320}
+                  height={90}
                   priority
                   style={{
-                    width: "170px",
+                    width: "clamp(220px, 28vw, 360px)",
                     height: "auto",
                     objectFit: "contain",
-                    maxWidth: "100%",
+                    display: "block",
                   }}
                 />
               </a>
