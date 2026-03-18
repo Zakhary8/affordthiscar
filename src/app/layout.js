@@ -61,7 +61,7 @@ export default function RootLayout({ children }) {
         }}
       >
         <PreferencesProvider>
-          <header
+          <div
             style={{
               position: "fixed",
               top: 0,
@@ -76,11 +76,10 @@ export default function RootLayout({ children }) {
               style={{
                 maxWidth: "1100px",
                 margin: "0 auto",
-                padding: "12px 20px",
+                padding: "10px 20px",
                 display: "flex",
+                justifyContent: "center",
                 alignItems: "center",
-                justifyContent: "space-between",
-                gap: "16px",
               }}
             >
               <a
@@ -105,19 +104,20 @@ export default function RootLayout({ children }) {
                   }}
                 />
               </a>
-
-              <div
-                style={{
-                  width: "140px",
-                  flexShrink: 0,
-                }}
-              >
-                <HeaderNav />
-              </div>
             </div>
-          </header>
+          </div>
 
-          <div style={{ height: "74px" }} />
+          <div style={{ height: "68px" }} />
+
+          <div
+            style={{
+              maxWidth: "1100px",
+              margin: "0 auto",
+              padding: "14px 20px 0",
+            }}
+          >
+            <HeaderNav />
+          </div>
 
           <div
             style={{
