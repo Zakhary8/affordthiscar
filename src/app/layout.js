@@ -63,11 +63,6 @@ export default function RootLayout({ children }) {
         <PreferencesProvider>
           <div
             style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              zIndex: 999,
               background: "#ffffff",
               borderBottom: "1px solid #e5e7eb",
             }}
@@ -106,8 +101,6 @@ export default function RootLayout({ children }) {
               </a>
             </div>
           </div>
-
-          <div style={{ height: "68px" }} />
 
           <div
             style={{
