@@ -13,25 +13,6 @@ export const metadata = {
   },
   description:
     "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
-  robots: {
-    index: true,
-    follow: true,
-  },
-  openGraph: {
-    title: "AffordThisCar",
-    description:
-      "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
-    url: "https://www.affordthiscar.com",
-    siteName: "AffordThisCar",
-    locale: "en_CA",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "AffordThisCar",
-    description:
-      "Check car affordability, compare vehicles, estimate ownership cost, review dealership deals, and explore monthly payment guides.",
-  },
 };
 
 export default function RootLayout({ children }) {
@@ -61,6 +42,7 @@ export default function RootLayout({ children }) {
         }}
       >
         <PreferencesProvider>
+          {/* 🔥 BIG HEADER */}
           <div
             style={{
               background: "#ffffff",
@@ -71,7 +53,7 @@ export default function RootLayout({ children }) {
               style={{
                 maxWidth: "1100px",
                 margin: "0 auto",
-                padding: "18px 20px 16px",
+                padding: "24px 20px 20px",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -90,11 +72,11 @@ export default function RootLayout({ children }) {
                 <Image
                   src="/logo.png"
                   alt="AffordThisCar logo"
-                  width={320}
-                  height={90}
+                  width={400}
+                  height={120}
                   priority
                   style={{
-                    width: "clamp(220px, 28vw, 360px)",
+                    width: "clamp(260px, 55vw, 420px)",
                     height: "auto",
                     objectFit: "contain",
                     display: "block",
@@ -104,36 +86,40 @@ export default function RootLayout({ children }) {
             </div>
           </div>
 
+          {/* MENU */}
           <div
             style={{
               maxWidth: "1100px",
               margin: "0 auto",
-              padding: "14px 20px 0",
+              padding: "16px 20px 0",
             }}
           >
             <HeaderNav />
           </div>
 
+          {/* PREFERENCES */}
           <div
             style={{
               maxWidth: "1100px",
               margin: "0 auto",
-              padding: "14px 20px 0",
+              padding: "16px 20px 0",
             }}
           >
             <PreferencesBar />
           </div>
 
+          {/* MAIN */}
           <main
             style={{
               maxWidth: "1100px",
               margin: "0 auto",
-              padding: "20px 20px 40px",
+              padding: "24px 20px 40px",
             }}
           >
             {children}
           </main>
 
+          {/* FOOTER */}
           <footer
             style={{
               marginTop: "40px",
