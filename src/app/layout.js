@@ -63,8 +63,10 @@ export default function RootLayout({ children }) {
         <PreferencesProvider>
           <header
             style={{
-              position: "sticky",
+              position: "fixed",
               top: 0,
+              left: 0,
+              right: 0,
               zIndex: 999,
               background: "#ffffff",
               borderBottom: "1px solid #e5e7eb",
@@ -114,6 +116,8 @@ export default function RootLayout({ children }) {
               </div>
             </div>
           </header>
+
+          <div style={{ height: "74px" }} />
 
           <div
             style={{
