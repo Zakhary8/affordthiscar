@@ -91,7 +91,6 @@ export function HeaderNav() {
     function handleResize() {
       const mobile = window.innerWidth <= 768;
       setIsMobile(mobile);
-
       if (!mobile) {
         setIsMenuOpen(false);
       }
@@ -114,32 +113,30 @@ export function HeaderNav() {
 
   if (!isMobile) {
     return (
-      <div style={desktopWrapStyle}>
-        <nav
-          style={{
-            display: "flex",
-            gap: "18px",
-            alignItems: "center",
-            flexWrap: "wrap",
-            justifyContent: "center",
-          }}
-        >
-          {navItems.map((item) => (
-            <a
-              key={item.key}
-              href={getLocalizedPath(preferences.language, item.key)}
-              style={navLinkStyle}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
-      </div>
+      <nav
+        style={{
+          display: "flex",
+          gap: "18px",
+          alignItems: "center",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        {navItems.map((item) => (
+          <a
+            key={item.key}
+            href={getLocalizedPath(preferences.language, item.key)}
+            style={navLinkStyle}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
     );
   }
 
   return (
-    <div style={mobileWrapStyle}>
+    <div style={{ position: "relative", width: "100%" }}>
       <button
         type="button"
         onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -203,15 +200,6 @@ export function FooterNav() {
     </div>
   );
 }
-
-const desktopWrapStyle = {
-  width: "100%",
-};
-
-const mobileWrapStyle = {
-  width: "100%",
-  position: "relative",
-};
 
 const navLinkStyle = {
   textDecoration: "none",

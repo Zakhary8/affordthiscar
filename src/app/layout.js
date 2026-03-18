@@ -63,10 +63,8 @@ export default function RootLayout({ children }) {
         <PreferencesProvider>
           <header
             style={{
-              position: "fixed",
+              position: "sticky",
               top: 0,
-              left: 0,
-              right: 0,
               zIndex: 999,
               background: "#ffffff",
               borderBottom: "1px solid #e5e7eb",
@@ -76,11 +74,11 @@ export default function RootLayout({ children }) {
               style={{
                 maxWidth: "1100px",
                 margin: "0 auto",
-                padding: "14px 20px",
+                padding: "12px 20px",
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
-                gap: "10px",
+                justifyContent: "space-between",
+                gap: "16px",
               }}
             >
               <a
@@ -94,11 +92,11 @@ export default function RootLayout({ children }) {
                 <Image
                   src="/logo.png"
                   alt="AffordThisCar logo"
-                  width={260}
-                  height={70}
+                  width={180}
+                  height={50}
                   priority
                   style={{
-                    width: "210px",
+                    width: "170px",
                     height: "auto",
                     objectFit: "contain",
                     maxWidth: "100%",
@@ -106,15 +104,16 @@ export default function RootLayout({ children }) {
                 />
               </a>
 
-              <HeaderNav />
+              <div
+                style={{
+                  width: "140px",
+                  flexShrink: 0,
+                }}
+              >
+                <HeaderNav />
+              </div>
             </div>
           </header>
-
-          <div
-            style={{
-              height: "132px",
-            }}
-          />
 
           <div
             style={{
