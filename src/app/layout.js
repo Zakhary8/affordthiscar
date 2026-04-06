@@ -1,7 +1,11 @@
 import "./globals.css";
 import Image from "next/image";
 import Script from "next/script";
+
 import { PreferencesProvider } from "../context/PreferencesContext";
+import { VehicleProvider } from "../context/VehicleContext";
+import { GarageProvider } from "../context/GarageContext";
+
 import PreferencesBar from "../components/PreferencesBar";
 import { HeaderNav, FooterNav } from "../components/HeaderNav";
 
@@ -32,108 +36,110 @@ export default function RootLayout({ children }) {
         }}
       >
         <PreferencesProvider>
-          {/* 🔥 MASSIVE LOGO HEADER */}
-          <div
-            style={{
-              background: "#ffffff",
-              borderBottom: "1px solid #e5e7eb",
-            }}
-          >
-            <div
-              style={{
-                maxWidth: "1100px",
-                margin: "0 auto",
-                padding: "32px 20px 26px",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <a
-                href="/"
+          <VehicleProvider>
+            <GarageProvider>
+              <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  width: "100%",
-                  textDecoration: "none",
+                  background: "#ffffff",
+                  borderBottom: "1px solid #e5e7eb",
                 }}
               >
-                <Image
-                  src="/logo.png"
-                  alt="AffordThisCar logo"
-                  width={520}
-                  height={150}
-                  priority
+                <div
                   style={{
-                    width: "clamp(300px, 70vw, 520px)",
-                    height: "auto",
-                    objectFit: "contain",
+                    maxWidth: "1100px",
+                    margin: "0 auto",
+                    padding: "10px 20px 8px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
-                />
-              </a>
-            </div>
-          </div>
-
-          {/* MENU */}
-          <div
-            style={{
-              maxWidth: "1100px",
-              margin: "0 auto",
-              padding: "18px 20px 0",
-            }}
-          >
-            <HeaderNav />
-          </div>
-
-          {/* PREFERENCES */}
-          <div
-            style={{
-              maxWidth: "1100px",
-              margin: "0 auto",
-              padding: "18px 20px 0",
-            }}
-          >
-            <PreferencesBar />
-          </div>
-
-          {/* MAIN */}
-          <main
-            style={{
-              maxWidth: "1100px",
-              margin: "0 auto",
-              padding: "26px 20px 40px",
-            }}
-          >
-            {children}
-          </main>
-
-          {/* FOOTER */}
-          <footer
-            style={{
-              marginTop: "40px",
-              padding: "28px 20px",
-              borderTop: "1px solid #e5e7eb",
-              background: "#ffffff",
-            }}
-          >
-            <div
-              style={{
-                maxWidth: "1100px",
-                margin: "0 auto",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "20px",
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ color: "#64748b", fontSize: "14px" }}>
-                © 2026 AffordThisCar
+                >
+                  <a
+                    href="/"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      width: "100%",
+                      textDecoration: "none",
+                      lineHeight: 0,
+                    }}
+                  >
+                    <Image
+                      src="/logo.png"
+                      alt="AffordThisCar logo"
+                      width={420}
+                      height={120}
+                      priority
+                      style={{
+                        width: "clamp(280px, 62vw, 420px)",
+                        height: "auto",
+                        objectFit: "contain",
+                        display: "block",
+                      }}
+                    />
+                  </a>
+                </div>
               </div>
 
-              <FooterNav />
-            </div>
-          </footer>
+              <div
+                style={{
+                  maxWidth: "1100px",
+                  margin: "0 auto",
+                  padding: "10px 20px 0",
+                }}
+              >
+                <HeaderNav />
+              </div>
+
+              <div
+                style={{
+                  maxWidth: "1100px",
+                  margin: "0 auto",
+                  padding: "10px 20px 0",
+                }}
+              >
+                <PreferencesBar />
+              </div>
+
+              <main
+                style={{
+                  maxWidth: "1100px",
+                  margin: "0 auto",
+                  padding: "18px 20px 40px",
+                }}
+              >
+                {children}
+              </main>
+
+              <footer
+                style={{
+                  marginTop: "40px",
+                  padding: "28px 20px",
+                  borderTop: "1px solid #e5e7eb",
+                  background: "#ffffff",
+                }}
+              >
+                <div
+                  style={{
+                    maxWidth: "1100px",
+                    margin: "0 auto",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: "20px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <div style={{ color: "#64748b", fontSize: "14px" }}>
+                    © 2026 AffordThisCar
+                  </div>
+
+                  <FooterNav />
+                </div>
+              </footer>
+            </GarageProvider>
+          </VehicleProvider>
         </PreferencesProvider>
       </body>
     </html>
