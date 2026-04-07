@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePreferences } from "../context/PreferencesContext";
 import { useVehicle } from "../context/VehicleContext";
 import { useGarage } from "../context/GarageContext";
@@ -23,30 +23,111 @@ export default function Home() {
     deleteVehicle,
   } = useGarage();
 
-  const [income, setIncome] = useState("");
   const [result, setResult] = useState(null);
 
   useEffect(() => {
     if (activeVehicle) {
-      setFullVehicle(activeVehicle);
+      setFullVehicle({
+        ...activeVehicle,
+        monthlyInsurance:
+          activeVehicle.monthlyInsurance || activeVehicle.insurance || "",
+        monthlyGas: activeVehicle.monthlyGas || activeVehicle.gas || "",
+      });
     }
   }, [activeVehicle, setFullVehicle]);
 
-  function calculate() {
-    if (!vehicle.price || !income) return;
+  const incomeMultiplier = useMemo(() => {
+    switch (vehicle.incomeFrequency) {
+      case "Weekly":
+        return 52;
+      case "Biweekly":
+        return 26;
+      case "Monthly":
+        return 12;
+      case "Yearly":
+      default:
+        return 1;
+    }
+  }, [vehicle.incomeFrequency]);
 
-    const monthlyIncome = Number(income) / 12;
-    const monthlyPayment = Number(vehicle.price) / 60;
-    const percent = monthlyIncome > 0 ? (monthlyPayment / monthlyIncome) * 100 : 0;
+  function calculateMonthlyPayment(loanAmount, annualRate, termYears) {
+    const monthlyRate = annualRate / 100 / 12;
+    const numberOfPayments = termYears * 12;
+
+    if (!numberOfPayments || numberOfPayments <= 0) return 0;
+
+    if (monthlyRate === 0) {
+      return loanAmount / numberOfPayments;
+    }
+
+    return (
+      (loanAmount * monthlyRate) /
+      (1 - Math.pow(1 + monthlyRate, -numberOfPayments))
+    );
+  }
+
+  function calculate() {
+    const price = Number(vehicle.price) || 0;
+    const downPayment = Number(vehicle.downPayment) || 0;
+    const interestRate = Number(vehicle.interestRate) || 0;
+    const loanTerm = Number(vehicle.term) || 0;
+    const incomeAmount = Number(vehicle.incomeAmount) || 0;
+    const monthlyExpenses = Number(vehicle.monthlyExpenses) || 0;
+    const monthlyInsurance = Number(vehicle.monthlyInsurance) || 0;
+    const monthlyGas = Number(vehicle.monthlyGas) || 0;
+
+    if (!price || !loanTerm || !incomeAmount) {
+      setResult(null);
+      return;
+    }
+
+    const taxRate =
+      preferences?.taxRegion === "Canada / Quebec" ? 0.14975 : 0.13;
+
+    const yearlyIncome =
+      vehicle.incomeFrequency === "Yearly"
+        ? incomeAmount
+        : incomeAmount * incomeMultiplier;
+
+    const monthlyIncome = yearlyIncome / 12;
+    const priceAfterTax = price * (1 + taxRate);
+    const loanAmount = Math.max(priceAfterTax - downPayment, 0);
+    const monthlyPayment = calculateMonthlyPayment(
+      loanAmount,
+      interestRate,
+      loanTerm
+    );
+    const totalMonthlyVehicleCost =
+      monthlyPayment + monthlyInsurance + monthlyGas;
+    const leftoverAfterBills = monthlyIncome - monthlyExpenses - totalMonthlyVehicleCost;
+    const vehiclePercentOfIncome =
+      monthlyIncome > 0 ? (totalMonthlyVehicleCost / monthlyIncome) * 100 : 0;
+
+    let affordabilityLabel = "Stretch";
+    if (vehiclePercentOfIncome <= 15) affordabilityLabel = "Comfortable";
+    else if (vehiclePercentOfIncome <= 20) affordabilityLabel = "Reasonable";
+    else if (vehiclePercentOfIncome <= 25) affordabilityLabel = "Tight";
 
     setResult({
+      taxRate,
+      yearlyIncome,
+      monthlyIncome,
+      priceAfterTax,
+      loanAmount,
       monthlyPayment,
-      percent,
+      totalMonthlyVehicleCost,
+      leftoverAfterBills,
+      vehiclePercentOfIncome,
+      affordabilityLabel,
     });
   }
 
   function handleSaveVehicle() {
-    saveVehicle(vehicle);
+    saveVehicle({
+      ...vehicle,
+      insurance: vehicle.monthlyInsurance || "",
+      gas: vehicle.monthlyGas || "",
+    });
   }
 
   return (
@@ -55,8 +136,12 @@ export default function Home() {
         <p style={eyebrowStyle}>Calculator</p>
         <h1 style={titleStyle}>Affordability Calculator</h1>
         <p style={leadStyle}>
-          Quickly estimate if a vehicle payment fits your income, then save it to your garage
-          and reuse it across the site.
+          Your tax region, currency, and language are saved automatically across pages.
+          <strong>
+            {" "}
+            {preferences?.taxRegion || "Canada / Quebec"}
+          </strong>
+          {preferences?.taxRegion === "Canada / Quebec" ? ", 14.975%." : "."}
         </p>
       </section>
 
@@ -88,9 +173,43 @@ export default function Home() {
             </div>
 
             <div>
-              <label style={labelStyle}>Price</label>
+              <label style={labelStyle}>Income Amount</label>
               <input
-                placeholder="34999"
+                placeholder="70000"
+                value={vehicle.incomeAmount}
+                onChange={(e) => updateVehicle("incomeAmount", e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Income Frequency</label>
+              <select
+                value={vehicle.incomeFrequency || "Yearly"}
+                onChange={(e) => updateVehicle("incomeFrequency", e.target.value)}
+                style={inputStyle}
+              >
+                <option value="Yearly">Yearly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Biweekly">Biweekly</option>
+                <option value="Weekly">Weekly</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Monthly Expenses</label>
+              <input
+                placeholder="1800"
+                value={vehicle.monthlyExpenses}
+                onChange={(e) => updateVehicle("monthlyExpenses", e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Vehicle Price Before Tax</label>
+              <input
+                placeholder="30000"
                 value={vehicle.price}
                 onChange={(e) => updateVehicle("price", e.target.value)}
                 style={inputStyle}
@@ -98,9 +217,19 @@ export default function Home() {
             </div>
 
             <div>
+              <label style={labelStyle}>Down Payment</label>
+              <input
+                placeholder="5000"
+                value={vehicle.downPayment}
+                onChange={(e) => updateVehicle("downPayment", e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
               <label style={labelStyle}>Interest Rate (%)</label>
               <input
-                placeholder="6.99"
+                placeholder="6.9"
                 value={vehicle.interestRate}
                 onChange={(e) => updateVehicle("interestRate", e.target.value)}
                 style={inputStyle}
@@ -108,7 +237,7 @@ export default function Home() {
             </div>
 
             <div>
-              <label style={labelStyle}>Term (years)</label>
+              <label style={labelStyle}>Loan Term (Years)</label>
               <input
                 placeholder="5"
                 value={vehicle.term}
@@ -118,11 +247,21 @@ export default function Home() {
             </div>
 
             <div>
-              <label style={labelStyle}>Income (yearly)</label>
+              <label style={labelStyle}>Monthly Insurance</label>
               <input
-                placeholder="60000"
-                value={income}
-                onChange={(e) => setIncome(e.target.value)}
+                placeholder="180"
+                value={vehicle.monthlyInsurance}
+                onChange={(e) => updateVehicle("monthlyInsurance", e.target.value)}
+                style={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Monthly Gas</label>
+              <input
+                placeholder="160"
+                value={vehicle.monthlyGas}
+                onChange={(e) => updateVehicle("monthlyGas", e.target.value)}
                 style={inputStyle}
               />
             </div>
@@ -143,15 +282,48 @@ export default function Home() {
           </div>
 
           {result && (
-            <div style={resultBox}>
-              <div style={resultStat}>
-                <span style={resultLabel}>Monthly Payment</span>
-                <span style={resultValue}>${result.monthlyPayment.toFixed(0)}</span>
+            <div style={resultWrap}>
+              <div style={summaryBanner}>
+                <div style={summaryLabel}>Affordability</div>
+                <div style={summaryValue}>{result.affordabilityLabel}</div>
               </div>
 
-              <div style={resultStat}>
-                <span style={resultLabel}>% of Income</span>
-                <span style={resultValue}>{result.percent.toFixed(1)}%</span>
+              <div style={resultGrid}>
+                <div style={statCard}>
+                  <div style={statLabel}>Price After Tax</div>
+                  <div style={statValue}>${result.priceAfterTax.toFixed(0)}</div>
+                </div>
+
+                <div style={statCard}>
+                  <div style={statLabel}>Loan Amount</div>
+                  <div style={statValue}>${result.loanAmount.toFixed(0)}</div>
+                </div>
+
+                <div style={statCard}>
+                  <div style={statLabel}>Monthly Payment</div>
+                  <div style={statValue}>${result.monthlyPayment.toFixed(0)}</div>
+                </div>
+
+                <div style={statCard}>
+                  <div style={statLabel}>Total Monthly Vehicle Cost</div>
+                  <div style={statValue}>
+                    ${result.totalMonthlyVehicleCost.toFixed(0)}
+                  </div>
+                </div>
+
+                <div style={statCard}>
+                  <div style={statLabel}>% of Income</div>
+                  <div style={statValue}>
+                    {result.vehiclePercentOfIncome.toFixed(1)}%
+                  </div>
+                </div>
+
+                <div style={statCard}>
+                  <div style={statLabel}>Left After Bills</div>
+                  <div style={statValue}>
+                    ${result.leftoverAfterBills.toFixed(0)}
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -266,7 +438,7 @@ const leadStyle = {
 
 const mainGrid = {
   display: "grid",
-  gridTemplateColumns: "minmax(0, 1.35fr) minmax(320px, 0.85fr)",
+  gridTemplateColumns: "minmax(0, 1.45fr) minmax(320px, 0.85fr)",
   gap: "20px",
   alignItems: "start",
 };
@@ -309,8 +481,8 @@ const activeVehicleBox = {
 
 const gridStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-  gap: "14px",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: "16px",
 };
 
 const labelStyle = {
@@ -332,7 +504,7 @@ const inputStyle = {
 };
 
 const buttonRow = {
-  marginTop: "18px",
+  marginTop: "20px",
   display: "flex",
   flexWrap: "wrap",
   gap: "10px",
@@ -363,33 +535,56 @@ const secondaryButton = {
   cursor: "pointer",
 };
 
-const resultBox = {
-  marginTop: "22px",
-  padding: "20px",
-  border: "1px solid #e2e8f0",
+const resultWrap = {
+  marginTop: "24px",
+};
+
+const summaryBanner = {
+  backgroundColor: "#111827",
+  color: "white",
   borderRadius: "18px",
-  backgroundColor: "#f8fafc",
+  padding: "20px",
+  marginBottom: "16px",
+};
+
+const summaryLabel = {
+  fontSize: "13px",
+  color: "#cbd5e1",
+  fontWeight: "700",
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
+  marginBottom: "8px",
+};
+
+const summaryValue = {
+  fontSize: "30px",
+  fontWeight: "800",
+};
+
+const resultGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-  gap: "16px",
+  gap: "14px",
 };
 
-const resultStat = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "6px",
+const statCard = {
+  backgroundColor: "#f8fafc",
+  border: "1px solid #e2e8f0",
+  borderRadius: "16px",
+  padding: "18px",
 };
 
-const resultLabel = {
+const statLabel = {
+  fontSize: "13px",
   color: "#64748b",
-  fontSize: "14px",
+  marginBottom: "8px",
   fontWeight: "700",
   textTransform: "uppercase",
   letterSpacing: "0.04em",
 };
 
-const resultValue = {
-  fontSize: "30px",
+const statValue = {
+  fontSize: "26px",
   fontWeight: "800",
   color: "#111827",
 };
