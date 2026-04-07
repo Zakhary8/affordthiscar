@@ -99,7 +99,8 @@ export default function Home() {
     );
     const totalMonthlyVehicleCost =
       monthlyPayment + monthlyInsurance + monthlyGas;
-    const leftoverAfterBills = monthlyIncome - monthlyExpenses - totalMonthlyVehicleCost;
+    const leftoverAfterBills =
+      monthlyIncome - monthlyExpenses - totalMonthlyVehicleCost;
     const vehiclePercentOfIncome =
       monthlyIncome > 0 ? (totalMonthlyVehicleCost / monthlyIncome) * 100 : 0;
 
@@ -130,17 +131,21 @@ export default function Home() {
     });
   }
 
+  function handleClear() {
+    clearVehicle();
+    setResult(null);
+    setActiveVehicle(null);
+  }
+
   return (
     <div style={pageWrap}>
       <section style={heroCard}>
         <p style={eyebrowStyle}>Calculator</p>
         <h1 style={titleStyle}>Affordability Calculator</h1>
         <p style={leadStyle}>
-          Your tax region, currency, and language are saved automatically across pages.
-          <strong>
-            {" "}
-            {preferences?.taxRegion || "Canada / Quebec"}
-          </strong>
+          Your tax region, currency, and language are saved automatically across
+          pages.
+          <strong> {preferences?.taxRegion || "Canada / Quebec"}</strong>
           {preferences?.taxRegion === "Canada / Quebec" ? ", 14.975%." : "."}
         </p>
       </section>
@@ -276,7 +281,7 @@ export default function Home() {
               Save Vehicle
             </button>
 
-            <button onClick={clearVehicle} style={secondaryButton}>
+            <button onClick={handleClear} style={secondaryButton}>
               Clear
             </button>
           </div>
@@ -356,7 +361,9 @@ export default function Home() {
                   >
                     <div style={garageTopRow}>
                       <div>
-                        <div style={garageNameStyle}>{v.name || "Untitled Vehicle"}</div>
+                        <div style={garageNameStyle}>
+                          {v.name || "Untitled Vehicle"}
+                        </div>
                         <div style={garagePriceStyle}>${v.price || "—"}</div>
                       </div>
 
@@ -390,7 +397,8 @@ export default function Home() {
           )}
 
           <div style={garageTipStyle}>
-            Tip: save a vehicle here, then go to Compare and drop it into Car 1 or Car 2.
+            Tip: save a vehicle here, then go to Compare and drop it into Car 1
+            or Car 2.
           </div>
         </div>
       </section>
