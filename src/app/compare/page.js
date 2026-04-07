@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { regions } from "../../data/regions";
+import { useGarage } from "../../context/GarageContext";
 
 export default function ComparePage() {
+  const { vehicles, activeVehicle, setActiveVehicle } = useGarage();
+
   const [regionKey, setRegionKey] = useState("canada");
 
   const [car1Name, setCar1Name] = useState("Car 1");
@@ -24,8 +27,40 @@ export default function ComparePage() {
 
   const [result, setResult] = useState(null);
 
+  useEffect(() => {
+    if (!activeVehicle) return;
+
+    setCar1Name(activeVehicle.name || "Car 1");
+    setCar1Price(activeVehicle.price || "");
+    setCar1Down(activeVehicle.downPayment || "");
+    setCar1Rate(activeVehicle.interestRate || "");
+    setCar1Term(activeVehicle.term || "");
+    setCar1Insurance(activeVehicle.insurance || "");
+    setCar1Gas(activeVehicle.gas || "");
+  }, [activeVehicle]);
+
+  function fillCar1(vehicle) {
+    setCar1Name(vehicle.name || "Car 1");
+    setCar1Price(vehicle.price || "");
+    setCar1Down(vehicle.downPayment || "");
+    setCar1Rate(vehicle.interestRate || "");
+    setCar1Term(vehicle.term || "");
+    setCar1Insurance(vehicle.insurance || "");
+    setCar1Gas(vehicle.gas || "");
+  }
+
+  function fillCar2(vehicle) {
+    setCar2Name(vehicle.name || "Car 2");
+    setCar2Price(vehicle.price || "");
+    setCar2Down(vehicle.downPayment || "");
+    setCar2Rate(vehicle.interestRate || "");
+    setCar2Term(vehicle.term || "");
+    setCar2Insurance(vehicle.insurance || "");
+    setCar2Gas(vehicle.gas || "");
+  }
+
   function money(value, currency) {
-    return value.toLocaleString("en-US", {
+    return Number(value || 0).toLocaleString("en-US", {
       style: "currency",
       currency,
       maximumFractionDigits: 0,
@@ -160,6 +195,59 @@ export default function ComparePage() {
             </select>
           </div>
         </div>
+      </section>
+
+      <section style={cardStyle}>
+        <h2 style={sectionTitleStyle}>Garage Vehicles</h2>
+
+        {vehicles.length === 0 ? (
+          <div style={emptyStateStyle}>
+            No saved vehicles yet. Save one from the home page first.
+          </div>
+        ) : (
+          <div style={garageGridStyle}>
+            {vehicles.map((vehicle) => {
+              const isActive = activeVehicle?.id === vehicle.id;
+
+              return (
+                <div
+                  key={vehicle.id}
+                  style={{
+                    ...garageCardStyle,
+                    border: isActive ? "2px solid #22c55e" : "1px solid #e2e8f0",
+                  }}
+                >
+                  <div style={{ fontWeight: "800", fontSize: "18px", marginBottom: "8px" }}>
+                    {vehicle.name || "Untitled Vehicle"}
+                  </div>
+
+                  <div style={{ color: "#475569", marginBottom: "14px" }}>
+                    ${vehicle.price || "—"}
+                  </div>
+
+                  <div style={garageButtonRowStyle}>
+                    <button
+                      onClick={() => {
+                        fillCar1(vehicle);
+                        setActiveVehicle(vehicle.id);
+                      }}
+                      style={buttonStyle}
+                    >
+                      Use as Car 1
+                    </button>
+
+                    <button
+                      onClick={() => fillCar2(vehicle)}
+                      style={secondaryButtonStyle}
+                    >
+                      Use as Car 2
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       <section style={twoColGridStyle}>
@@ -368,6 +456,24 @@ const twoColGridStyle = {
   gap: "20px",
 };
 
+const garageGridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+  gap: "16px",
+};
+
+const garageCardStyle = {
+  backgroundColor: "#f8fafc",
+  padding: "18px",
+  borderRadius: "16px",
+};
+
+const garageButtonRowStyle = {
+  display: "flex",
+  gap: "10px",
+  flexWrap: "wrap",
+};
+
 const labelStyle = {
   display: "block",
   marginBottom: "8px",
@@ -395,6 +501,17 @@ const buttonStyle = {
   border: "none",
   borderRadius: "14px",
   fontSize: "16px",
+  fontWeight: "700",
+  cursor: "pointer",
+};
+
+const secondaryButtonStyle = {
+  padding: "12px 14px",
+  backgroundColor: "white",
+  color: "#111827",
+  border: "1px solid #cbd5e1",
+  borderRadius: "12px",
+  fontSize: "14px",
   fontWeight: "700",
   cursor: "pointer",
 };
