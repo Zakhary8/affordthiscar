@@ -35,8 +35,8 @@ export default function ComparePage() {
     setCar1Down(activeVehicle.downPayment || "");
     setCar1Rate(activeVehicle.interestRate || "");
     setCar1Term(activeVehicle.term || "");
-    setCar1Insurance(activeVehicle.insurance || "");
-    setCar1Gas(activeVehicle.gas || "");
+    setCar1Insurance(activeVehicle.insurance || activeVehicle.monthlyInsurance || "");
+    setCar1Gas(activeVehicle.gas || activeVehicle.monthlyGas || "");
   }, [activeVehicle]);
 
   function fillCar1(vehicle) {
@@ -45,8 +45,8 @@ export default function ComparePage() {
     setCar1Down(vehicle.downPayment || "");
     setCar1Rate(vehicle.interestRate || "");
     setCar1Term(vehicle.term || "");
-    setCar1Insurance(vehicle.insurance || "");
-    setCar1Gas(vehicle.gas || "");
+    setCar1Insurance(vehicle.insurance || vehicle.monthlyInsurance || "");
+    setCar1Gas(vehicle.gas || vehicle.monthlyGas || "");
   }
 
   function fillCar2(vehicle) {
@@ -55,8 +55,8 @@ export default function ComparePage() {
     setCar2Down(vehicle.downPayment || "");
     setCar2Rate(vehicle.interestRate || "");
     setCar2Term(vehicle.term || "");
-    setCar2Insurance(vehicle.insurance || "");
-    setCar2Gas(vehicle.gas || "");
+    setCar2Insurance(vehicle.insurance || vehicle.monthlyInsurance || "");
+    setCar2Gas(vehicle.gas || vehicle.monthlyGas || "");
   }
 
   function money(value, currency) {
@@ -217,28 +217,23 @@ export default function ComparePage() {
                     border: isActive ? "2px solid #22c55e" : "1px solid #e2e8f0",
                   }}
                 >
-                  <div style={{ fontWeight: "800", fontSize: "18px", marginBottom: "8px" }}>
-                    {vehicle.name || "Untitled Vehicle"}
-                  </div>
+                  <div style={garageNameStyle}>{vehicle.name || "Untitled Vehicle"}</div>
+                  <div style={garagePriceStyle}>${vehicle.price || "—"}</div>
 
-                  <div style={{ color: "#475569", marginBottom: "14px" }}>
-                    ${vehicle.price || "—"}
-                  </div>
-
-                  <div style={garageButtonRowStyle}>
+                  <div style={garageActionRowStyle}>
                     <button
                       onClick={() => {
                         fillCar1(vehicle);
                         setActiveVehicle(vehicle.id);
                       }}
-                      style={buttonStyle}
+                      style={garagePrimaryButtonStyle}
                     >
                       Use as Car 1
                     </button>
 
                     <button
                       onClick={() => fillCar2(vehicle)}
-                      style={secondaryButtonStyle}
+                      style={garageSecondaryButtonStyle}
                     >
                       Use as Car 2
                     </button>
@@ -468,10 +463,44 @@ const garageCardStyle = {
   borderRadius: "16px",
 };
 
-const garageButtonRowStyle = {
+const garageNameStyle = {
+  fontWeight: "800",
+  fontSize: "18px",
+  color: "#111827",
+};
+
+const garagePriceStyle = {
+  marginTop: "6px",
+  marginBottom: "14px",
+  color: "#475569",
+};
+
+const garageActionRowStyle = {
   display: "flex",
   gap: "10px",
   flexWrap: "wrap",
+};
+
+const garagePrimaryButtonStyle = {
+  padding: "12px 16px",
+  backgroundColor: "#111827",
+  color: "white",
+  border: "none",
+  borderRadius: "12px",
+  fontSize: "14px",
+  fontWeight: "700",
+  cursor: "pointer",
+};
+
+const garageSecondaryButtonStyle = {
+  padding: "12px 16px",
+  backgroundColor: "white",
+  color: "#111827",
+  border: "1px solid #cbd5e1",
+  borderRadius: "12px",
+  fontSize: "14px",
+  fontWeight: "700",
+  cursor: "pointer",
 };
 
 const labelStyle = {
@@ -501,17 +530,6 @@ const buttonStyle = {
   border: "none",
   borderRadius: "14px",
   fontSize: "16px",
-  fontWeight: "700",
-  cursor: "pointer",
-};
-
-const secondaryButtonStyle = {
-  padding: "12px 14px",
-  backgroundColor: "white",
-  color: "#111827",
-  border: "1px solid #cbd5e1",
-  borderRadius: "12px",
-  fontSize: "14px",
   fontWeight: "700",
   cursor: "pointer",
 };
